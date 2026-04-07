@@ -69,6 +69,13 @@ Recommended Vercel project settings:
 - Build Command: `npm run build`
 - Output Directory: `dist`
 
+If you see Vercel's `404: NOT_FOUND` page after deployment, the first thing to verify is the
+project root. This repo is a monorepo and the deployable frontend lives in
+`my-initia-project/creato3-frontend`, so Vercel must use `creato3-frontend` as the Root Directory.
+If the Root Directory is left at `my-initia-project`, Vercel will not read this frontend's
+`vercel.json`, `package.json`, or `dist` output, and direct visits to routes like `/discover` or
+`/creator/:id` will fail even if every file is committed to Git.
+
 ## Interwoven Bridge note (local testing)
 
 The Interwoven modal only lists **registered chain IDs**. Local appchains may
