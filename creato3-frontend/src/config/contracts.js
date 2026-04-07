@@ -8,6 +8,15 @@ const readEnv = (key, devFallback = '') => {
   return import.meta.env.DEV ? devFallback : ''
 }
 
+const hasNonEmptyValue = (value) => typeof value === 'string' && value.trim().length > 0
+
+const requiredEnvEntries = [
+  ['VITE_EVM_RPC', import.meta.env.VITE_EVM_RPC],
+  ['VITE_COSMOS_RPC', import.meta.env.VITE_COSMOS_RPC],
+  ['VITE_REST_API', import.meta.env.VITE_REST_API],
+  ['VITE_INDEXER_URL', import.meta.env.VITE_INDEXER_URL]
+]
+
 export const CONTRACTS = {
   profile: import.meta.env.VITE_PROFILE_CONTRACT,
   subscription: import.meta.env.VITE_SUBSCRIPTION_CONTRACT,
@@ -20,3 +29,6 @@ export const COSMOS_RPC = readEnv('VITE_COSMOS_RPC', 'http://localhost:26657')
 export const REST_API = readEnv('VITE_REST_API', 'http://localhost:1317')
 export const INDEXER_URL = readEnv('VITE_INDEXER_URL', 'http://localhost:8080')
 export const PUBLIC_ENDPOINTS_CONFIGURED = Boolean(EVM_RPC && COSMOS_RPC && REST_API && INDEXER_URL)
+export const MISSING_PUBLIC_ENV_KEYS = requiredEnvEntries
+  .filter(([, value]) => !hasNonEmptyValue(value))
+  .map(([key]) => key)
