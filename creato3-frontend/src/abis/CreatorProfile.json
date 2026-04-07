@@ -1,0 +1,143 @@
+[
+  {
+    "type": "event",
+    "name": "CreatorRegistered",
+    "inputs": [
+      { "indexed": true, "name": "wallet", "type": "address" },
+      { "indexed": false, "name": "initUsername", "type": "string" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TierCreated",
+    "inputs": [
+      { "indexed": true, "name": "creator", "type": "address" },
+      { "indexed": true, "name": "tierId", "type": "uint8" },
+      { "indexed": false, "name": "price", "type": "uint256" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TierUpdated",
+    "inputs": [
+      { "indexed": true, "name": "creator", "type": "address" },
+      { "indexed": true, "name": "tierId", "type": "uint8" },
+      { "indexed": false, "name": "price", "type": "uint256" },
+      { "indexed": false, "name": "active", "type": "bool" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "registerCreator",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "displayName", "type": "string" },
+      { "name": "bio", "type": "string" },
+      { "name": "category", "type": "string" },
+      { "name": "initUsername", "type": "string" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "createTier",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "price", "type": "uint256" },
+      { "name": "name", "type": "string" },
+      { "name": "description", "type": "string" }
+    ],
+    "outputs": [
+      { "name": "tierId", "type": "uint8" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "updateTier",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "tierId", "type": "uint8" },
+      { "name": "price", "type": "uint256" },
+      { "name": "name", "type": "string" },
+      { "name": "description", "type": "string" },
+      { "name": "active", "type": "bool" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getCreator",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "creator", "type": "address" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "components": [
+          { "name": "wallet", "type": "address" },
+          { "name": "initUsername", "type": "string" },
+          { "name": "displayName", "type": "string" },
+          { "name": "bio", "type": "string" },
+          { "name": "category", "type": "string" },
+          { "name": "active", "type": "bool" },
+          { "name": "createdAt", "type": "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getTier",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "creator", "type": "address" },
+      { "name": "tierId", "type": "uint8" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "components": [
+          { "name": "price", "type": "uint256" },
+          { "name": "name", "type": "string" },
+          { "name": "description", "type": "string" },
+          { "name": "active", "type": "bool" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getActiveTiers",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "creator", "type": "address" }
+    ],
+    "outputs": [
+      {
+        "name": "tiers",
+        "type": "tuple[]",
+        "components": [
+          { "name": "price", "type": "uint256" },
+          { "name": "name", "type": "string" },
+          { "name": "description", "type": "string" },
+          { "name": "active", "type": "bool" }
+        ]
+      },
+      { "name": "ids", "type": "uint8[]" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "isRegistered",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "creator", "type": "address" }
+    ],
+    "outputs": [
+      { "name": "", "type": "bool" }
+    ]
+  }
+]

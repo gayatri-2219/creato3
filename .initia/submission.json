@@ -1,0 +1,12 @@
+{
+  "project_name": "Creato3",
+  "repo_url": "https://github.com/YOUR_USERNAME/creato3",
+  "commit_sha": "",
+  "rollup_chain_id": "creato3-1",
+  "deployed_address": "0xb459aF522fDae51FCf7654Adc0B00E97F74CfFdF",
+  "vm": "evm",
+  "native_feature": "auto-signing",
+  "core_logic_path": "creato3/src/SubscriptionManager.sol",
+  "native_feature_frontend_path": "creato3-frontend/src/components/SubscribeFlow.jsx",
+  "demo_video_url": "https://youtu.be/YOUR_VIDEO_ID"
+}

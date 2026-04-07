@@ -1,0 +1,37 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Local chain state
+.minitia/
+.initia/config/
+.initia/data/
+
+# External source checkouts
+initia/
+minievm/
+
+# Local repo migration backups
+.repo-backups/
+skills-lock.json
+
+# Frontend artifacts and secrets
+creato3-frontend/node_modules/
+creato3-frontend/dist/
+creato3-frontend/dist-ssr/
+creato3-frontend/.env
+creato3-frontend/.env.local
+creato3-frontend/*.local
+
+# Contracts artifacts and secrets
+creato3/cache/
+creato3/out/
+creato3/.env
+creato3/broadcast/*/31337/
+creato3/broadcast/**/dry-run/

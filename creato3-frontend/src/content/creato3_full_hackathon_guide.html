@@ -1,0 +1,1199 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gap:12px;--rad:var(--border-radius-lg)}
+.wrap{padding:1.5rem 0;font-family:var(--font-sans)}
+.hero{margin-bottom:1.5rem}
+.hero h1{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.hero p{font-size:14px;color:var(--color-text-secondary);line-height:1.6}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+.tag-blue{background:var(--color-background-info);color:var(--color-text-info)}
+.tag-green{background:var(--color-background-success);color:var(--color-text-success)}
+.tag-amber{background:var(--color-background-warning);color:var(--color-text-warning)}
+.tag-red{background:var(--color-background-danger);color:var(--color-text-danger)}
+.tag-purple{background:#EEEDFE;color:#534AB7}
+.phase{border:0.5px solid var(--color-border-tertiary);border-radius:var(--rad);margin-bottom:1rem;overflow:hidden}
+.ph{padding:0.9rem 1.25rem;cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--color-background-secondary);user-select:none}
+.ph:hover{background:var(--color-background-tertiary)}
+.ph-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.ph-meta{flex:1}
+.ph-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.ph-days{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.ph-arr{font-size:11px;color:var(--color-text-tertiary);transition:transform 0.2s;flex-shrink:0}
+.ph-arr.open{transform:rotate(90deg)}
+.pb{display:none;padding:1.25rem;border-top:0.5px solid var(--color-border-tertiary)}
+.pb.open{display:block}
+.section{font-size:14px;font-weight:500;color:var(--color-text-primary);margin:1.1rem 0 0.5rem;padding-bottom:4px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.section:first-child{margin-top:0}
+.step{margin-bottom:1rem;padding-left:1rem;border-left:2px solid var(--color-border-tertiary)}
+.step-label{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.65}
+.code{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:0.65rem 0.85rem;margin-top:8px;font-size:11.5px;font-family:var(--font-mono);color:var(--color-text-secondary);white-space:pre;overflow-x:auto;line-height:1.55}
+.prompt{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-left:3px solid var(--color-border-info);border-radius:var(--border-radius-md);padding:0.65rem 0.85rem;margin-top:8px;font-size:12px;font-family:var(--font-mono);color:var(--color-text-secondary);white-space:pre-wrap;line-height:1.55}
+.prompt-label{font-size:10.5px;font-weight:500;color:var(--color-text-info);margin-bottom:4px}
+.warn{background:var(--color-background-warning);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:0.65rem 0.85rem;margin-top:8px}
+.warn-label{font-size:11px;font-weight:500;color:var(--color-text-warning);margin-bottom:3px}
+.warn-text{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.target{background:var(--color-background-success);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:0.65rem 0.85rem;margin-top:10px}
+.target-label{font-size:11px;font-weight:500;color:var(--color-text-success);margin-bottom:3px}
+.target-text{font-size:12px;color:var(--color-text-secondary);line-height:1.7}
+.table-wrap{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:6px 10px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary)}
+td{padding:6px 10px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.bar-bg{flex:1;height:5px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.score-label{font-size:12px;color:var(--color-text-secondary);min-width:200px}
+.score-val{font-size:12px;color:var(--color-text-secondary);min-width:50px;text-align:right}
+</style>
+<div class="wrap">
+
+<div class="hero">
+<h1>Creato3 — Complete Hackathon Build Guide</h1>
+<p>AI-Powered Gasless Creator Monetization · EVM · All 3 Native Features · ~$15,700 prize target<br>Built from your uploaded blueprint, build guide, and Initia understanding docs.</p>
+<div class="tag-row">
+<span class="tag tag-blue">EVM / Solidity</span>
+<span class="tag tag-green">Auto-signing</span>
+<span class="tag tag-green">Interwoven Bridge</span>
+<span class="tag tag-green">Initia Usernames</span>
+<span class="tag tag-amber">AI Track</span>
+<span class="tag tag-red">Deadline: Apr 15 11PM UTC</span>
+</div>
+</div>
+
+<!-- PHASE 0: STRATEGY -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">0</div>
+<div class="ph-meta"><div class="ph-title">Why Creato3 Wins — Strategy & Prize Map</div><div class="ph-days">Read before opening your terminal</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">The gap no competitor sees</div>
+<div class="step">
+<div class="step-label">Competitor landscape (from your docs — 15 actual submissions reviewed)</div>
+<div class="step-desc">6 DeFi yield projects, 6 AI agent tools, 4 gaming apps. Zero creator economy projects. Zero gasless subscription platforms. 200 million creators globally pay 8–20% to Patreon, Substack, YouTube every month. Creato3 is a category of one. Your demo opening line: "Patreon takes 10%. Substack takes 10%. Creato3 takes zero."</div>
+</div>
+
+<div class="section">Judging scores — Creato3 vs field</div>
+<div class="score-row"><span class="score-label">Originality & Track Fit (20%)</span><div class="bar-bg"><div class="bar-fill" style="width:95%;background:#185FA5"></div></div><span class="score-val">9.5/10</span></div>
+<div class="score-row"><span class="score-label">Technical Execution (30%)</span><div class="bar-bg"><div class="bar-fill" style="width:82%;background:#0F6E56"></div></div><span class="score-val">8.2/10</span></div>
+<div class="score-row"><span class="score-label">Product Value & UX (20%)</span><div class="bar-bg"><div class="bar-fill" style="width:95%;background:#854F0B"></div></div><span class="score-val">9.5/10</span></div>
+<div class="score-row"><span class="score-label">Working Demo (20%)</span><div class="bar-bg"><div class="bar-fill" style="width:90%;background:#534AB7"></div></div><span class="score-val">9.0/10</span></div>
+<div class="score-row"><span class="score-label">Market Understanding (10%)</span><div class="bar-bg"><div class="bar-fill" style="width:95%;background:#993C1D"></div></div><span class="score-val">9.5/10</span></div>
+
+<div class="section">Prize map — ~$15,700 realistic capture</div>
+<div class="table-wrap">
+<table>
+<tr><th>Prize gate</th><th>Amount</th><th>Path</th><th>Confidence</th></tr>
+<tr><td>1st place win grant</td><td>$3,000</td><td>Only project in creator economy space</td><td>Very High</td></tr>
+<tr><td>MVP Demo Day (Mac Mini)</td><td>$600</td><td>Working subscription + AI by Day 7</td><td>High</td></tr>
+<tr><td>Gate 1: Mainnet launch</td><td>$1,500</td><td>Deploy to testnet on final day</td><td>Certain</td></tr>
+<tr><td>Gate 2: 500 wallets</td><td>$2,500</td><td>10 creators × 50 fans each</td><td>High</td></tr>
+<tr><td>Network School trip</td><td>$1,500</td><td>Strongest founder story in field</td><td>High</td></tr>
+<tr><td>Stretch: 1M transactions</td><td>$6,600</td><td>Monthly sub renewals compound</td><td>Medium</td></tr>
+</table>
+</div>
+
+<div class="target">
+<div class="target-label">✓ The pitch — memorise this sentence</div>
+<div class="target-text">"Patreon takes 10% from 200 million creators every month. Creato3 takes zero. Here is a creator earning $500/month keeping $600 extra per year." — Open every demo and every judge conversation with this line. Never mention blockchain first.</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 1: M1 MAC SETUP -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#E6F1FB;color:#185FA5">1</div>
+<div class="ph-meta"><div class="ph-title">M1 Mac Environment Setup</div><div class="ph-days">Day 1 — all Initia tools on Apple Silicon, in order</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">Step 1.1 — Create project workspace</div>
+<div class="step">
+<div class="step-desc">Open Terminal. Run these two commands. Stay in this directory for the entire build. Open a second tab — you'll need it for weave init and long-running processes.</div>
+<div class="code">mkdir my-initia-project
+cd my-initia-project</div>
+</div>
+
+<div class="section">Step 1.2 — Install prerequisites (M1-native, in this exact order)</div>
+<div class="step">
+<div class="step-label">Homebrew, Go, Docker, Node</div>
+<div class="code"># Check Go (need 1.22+)
+go version
+# If missing: brew install go
+
+# Check Docker Desktop running
+docker ps
+# If not running: open Docker Desktop app, wait for green icon
+
+# Check Node (need 18+)
+node --version
+# If missing: brew install nvm && nvm install 20 && nvm use 20
+
+# Check Git
+git --version</div>
+</div>
+
+<div class="step">
+<div class="step-label">Install Foundry (EVM toolchain — ARM64 native)</div>
+<div class="code">curl -L https://foundry.paradigm.xyz | bash
+source ~/.zshrc          # reload your shell (Mac uses zsh)
+foundryup
+
+# Verify all three tools
+forge --version
+cast --version
+anvil --version</div>
+<div class="warn">
+<div class="warn-label">⚠ M1 Mac specific</div>
+<div class="warn-text">After foundryup, if forge is not found, run: export PATH="$HOME/.foundry/bin:$PATH" >> ~/.zshrc && source ~/.zshrc</div>
+</div>
+</div>
+
+<div class="section">Step 1.3 — Install AI skill + Claude Code</div>
+<div class="step">
+<div class="step-desc">Install the Initia skill first — this gives your AI agent Initia-specific context. Without it, AI-generated code won't account for Initia's chain config, deployment patterns, or CLI commands.</div>
+<div class="code">npx skills add initia-labs/agent-skills
+
+# Install Claude Code globally (recommended AI agent)
+npm install -g @anthropic-ai/claude-code
+
+# Start Claude Code from your project directory
+claude</div>
+<div class="warn">
+<div class="warn-label">⚠ Two terminals — keep both open</div>
+<div class="warn-text">Terminal 1: Claude Code (AI agent). Terminal 2: interactive CLI for weave init, long builds. Never run weave init inside Claude Code.</div>
+</div>
+</div>
+
+<div class="section">Step 1.4 — Install Initia tools via AI agent</div>
+<div class="step">
+<div class="step-desc">Paste this into Claude Code (Terminal 1). It installs weave, initiad, minitiad, and jq — the four Initia-specific CLI tools.</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, please set up my environment for the EVM track. I'm on an M1 Mac running macOS. Install weave, initiad, minitiad, and jq. Then verify all tools are accessible in my PATH.</div>
+</div>
+
+<div class="step">
+<div class="step-label">Verify all tools are ready</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, please verify that `initiad`, `weave`, `minitiad`, `forge`, and `cast` are properly installed and accessible in my PATH.</div>
+</div>
+
+<div class="target">
+<div class="target-label">✓ Day 1 target — appchain not yet started, just tools ready</div>
+<div class="target-text">• weave --version returns output<br>• initiad version returns output<br>• forge --version returns output<br>• cast --version returns output<br>• docker ps shows no errors (Docker running)<br>• Claude Code running in /my-initia-project</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 2: APPCHAIN LAUNCH -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#E1F5EE;color:#0F6E56">2</div>
+<div class="ph-meta"><div class="ph-title">Appchain Launch — weave init Complete Guide</div><div class="ph-days">Day 1 (continued) — your creato3-1 rollup live on Initia testnet</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">Step 2.1 — Clear existing state (only if you ran weave init before)</div>
+<div class="code"># ONLY run if you had a previous weave init:
+rm -rf ~/.weave ~/.initia ~/.minitia ~/.opinit
+docker rm -f weave-relayer || true
+# Then continue with weave init below.</div>
+
+<div class="section">Step 2.2 — weave init (Terminal 2 — interactive, cannot be automated)</div>
+<div class="step">
+<div class="step-desc">Run in Terminal 2. Follow every prompt below exactly. Wrong selections require starting over.</div>
+<div class="code">weave init</div>
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>#</th><th>Prompt</th><th>Creato3 action — exact value</th></tr>
+<tr><td>1</td><td>Gas Station account setup</td><td>Select "Generate new account" → COPY the address shown</td></tr>
+<tr><td>2</td><td>Fund your Gas Station</td><td>Go to faucet.testnet.initia.xyz → paste address → Submit → wait → return</td></tr>
+<tr><td>3</td><td>Type 'continue' to proceed</td><td>Type: continue → Enter</td></tr>
+<tr><td>4</td><td>What do you want to do?</td><td>Select: Launch a new rollup</td></tr>
+<tr><td>5</td><td>Select the Initia L1 network</td><td>Select: Testnet (initiation-2)</td></tr>
+<tr><td>6</td><td>Select the Virtual Machine (VM)</td><td>Select: EVM</td></tr>
+<tr><td>7</td><td>Specify rollup chain ID</td><td>Type: <strong>creato3-1</strong> → SAVE THIS</td></tr>
+<tr><td>8</td><td>Specify rollup gas denom</td><td>Press Tab (default: umin)</td></tr>
+<tr><td>9</td><td>Specify rollup node moniker</td><td>Press Tab (default: operator)</td></tr>
+<tr><td>10</td><td>Submission Interval</td><td>Press Tab (default: 1m)</td></tr>
+<tr><td>11</td><td>Output Finalization Period</td><td>Press Tab (default: 168h)</td></tr>
+<tr><td>12</td><td>Data availability</td><td>Select: Initia L1</td></tr>
+<tr><td>13</td><td>Oracle price feed</td><td>Select: Enable</td></tr>
+<tr><td>14</td><td>System keys method</td><td>Select: Generate new system keys</td></tr>
+<tr><td>15</td><td>System accounts funding</td><td>Select: Use the default preset</td></tr>
+<tr><td>16</td><td>Fee whitelist addresses</td><td>Press Enter (leave empty)</td></tr>
+<tr><td>17</td><td>Add Gas Station to genesis?</td><td>Select: Yes</td></tr>
+<tr><td>18</td><td>Genesis balance</td><td>Type exactly: <strong>1000000000000000000000000</strong> (10^24 for EVM)</td></tr>
+<tr><td>19</td><td>Add additional genesis accounts?</td><td>Select: No</td></tr>
+<tr><td>20</td><td>Type 'continue' to proceed</td><td>Type: continue → Enter</td></tr>
+<tr><td>21</td><td>Confirm transactions [y]:</td><td>Type: y → Enter</td></tr>
+</table>
+</div>
+
+<div class="warn">
+<div class="warn-label">⚠ Critical: fund faucet BEFORE typing continue at step 3</div>
+<div class="warn-text">If you type continue before the faucet transaction confirms, setup fails. Go to faucet.testnet.initia.xyz, paste your Gas Station address, click Submit, wait for success. Then return and type continue.</div>
+</div>
+
+<div class="section">Step 2.3 — Start OPinit Executor</div>
+<div class="code">weave opinit init executor
+# Interactive prompts:
+# "Existing keys detected?" → Yes, use detected keys
+# "System key for Oracle?" → Generate new system key
+# "Existing config detected?" → Yes, prefill
+# "Listen address?" → Tab (localhost:3000 — verify port is free)
+# L1 RPC, Chain ID, Gas Denom → Enter for each (use defaults)
+# Rollup RPC → Tab (http://localhost:26657)
+
+weave opinit start executor -d
+weave opinit log executor | tail -10  # verify no ERROR messages</div>
+
+<div class="section">Step 2.4 — Start IBC Relayer (Docker must be running)</div>
+<div class="code">weave relayer init
+# "Select rollup type?" → Local Rollup (creato3-1)
+# RPC endpoint → Tab (http://localhost:26657)
+# REST endpoint → Tab (http://localhost:1317)
+# IBC channel method → Subscribe to transfer and nft-transfer (minimal)
+# Select channels → Space to select all → Enter
+# Challenger key? → Yes
+
+weave relayer start -d
+weave relayer log  # verify IBC channel setup, no errors</div>
+
+<div class="section">Step 2.5 — Import Gas Station keys to both keychains</div>
+<div class="code">MNEMONIC=$(jq -r '.common.gas_station.mnemonic' ~/.weave/config.json)
+
+# Import into initiad (L1 keychain)
+initiad keys add gas-station \
+  --recover --keyring-backend test \
+  --coin-type 60 --key-type eth_secp256k1 \
+  --source <(echo -n "$MNEMONIC")
+
+# Import into minitiad (L2 / your appchain keychain)
+minitiad keys add gas-station \
+  --recover --keyring-backend test \
+  --coin-type 60 --key-type eth_secp256k1 \
+  --source <(echo -n "$MNEMONIC")
+
+# Verify both — gas-station should appear in both lists
+initiad keys list --keyring-backend test
+minitiad keys list --keyring-backend test
+
+# Export EVM private key (needed for Foundry deployments)
+minitiad keys export gas-station \
+  --keyring-backend test --unsafe --unarmored-hex
+# SAVE this as GAS_STATION_PK</div>
+
+<div class="section">Step 2.6 — Health check via AI agent</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, please verify that my appchain (chain ID: creato3-1), executor bot, and relayer are running and that my Gas Station account has a balance on both L1 and L2.</div>
+
+<div class="section">Step 2.7 — After rebooting your Mac (run every time)</div>
+<div class="code">weave rollup start -d
+weave opinit start executor -d
+# Relayer stays running via Docker as long as Docker Desktop is open
+minitiad status --node http://localhost:26657 | jq .SyncInfo.latest_block_height</div>
+
+<div class="target">
+<div class="target-label">✓ Day 1 complete target</div>
+<div class="target-text">• creato3-1 producing blocks (height increases)<br>• Gas Station has umin balance on L2<br>• Executor logs show no ERROR level messages<br>• Relayer started successfully<br>• gas-station key in both initiad and minitiad keychains<br>• GAS_STATION_PK saved somewhere safe (not in repo)</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 3: SMART CONTRACTS -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#EEEDFE;color:#534AB7">3</div>
+<div class="ph-meta"><div class="ph-title">Smart Contracts — Three Solidity Contracts</div><div class="ph-days">Day 2–3 — CreatorProfile, SubscriptionManager, CreatorTreasury</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">Architecture — single responsibility design</div>
+<div class="table-wrap">
+<table>
+<tr><th>Contract</th><th>Single job</th><th>One-sentence analogy</th></tr>
+<tr><td>CreatorProfile.sol</td><td>Store creator identity, tiers, .init username</td><td>The creator's profile card stored on-chain</td></tr>
+<tr><td>SubscriptionManager.sol</td><td>Subscribe, check access, renew, cancel</td><td>The billing system — tracks who pays whom</td></tr>
+<tr><td>CreatorTreasury.sol</td><td>Hold payments, zero-fee withdrawal</td><td>The creator's bank account — 100% of earnings</td></tr>
+</table>
+</div>
+
+<div class="section">Step 3.1 — Create Foundry project</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, create a Foundry project in a directory named `creato3` inside my project folder. Run `forge init creato3` and install the OpenZeppelin contracts dependency. Then verify the project builds with `forge build`.</div>
+
+<div class="section">Step 3.2 — Generate CreatorProfile.sol (Day 2)</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, create CreatorProfile.sol in creato3/src/ with these exact requirements:
+
+STRUCTS:
+Creator { address wallet, string initUsername, string displayName, string bio, string category, bool active, uint256 createdAt }
+CreatorTier { uint256 price, string name, string description, bool active }
+
+STATE:
+mapping(address => Creator) public creators
+mapping(address => mapping(uint8 => CreatorTier)) public tiers
+mapping(address => uint8) public tierCount
+
+FUNCTIONS:
+- registerCreator(displayName, bio, category, initUsername) external
+  require: not already registered
+  store Creator struct, emit CreatorRegistered(wallet, initUsername)
+- createTier(price, name, description) external returns (uint8 tierId)
+  require: creator registered, price > 0
+  emit TierCreated(creator, tierId, price)
+- updateTier(tierId, price, name, description, active) external (caller must own profile)
+- getCreator(address) external view returns (Creator memory)
+- getTier(address, uint8) external view returns (CreatorTier memory)
+- getActiveTiers(address) external view returns (CreatorTier[] memory, uint8[] memory)
+- isRegistered(address) external view returns (bool)
+
+Also create test/CreatorProfile.t.sol with tests for:
+- register succeeds with correct data
+- duplicate register reverts
+- createTier stores correctly
+- getActiveTiers returns only active tiers
+- unregistered creator cannot create tier
+
+Run forge test -- all must pass before we continue.</div>
+
+<div class="section">Step 3.3 — Generate SubscriptionManager.sol (Day 3)</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, create SubscriptionManager.sol in creato3/src/.
+
+CONSTRUCTOR: constructor(address _profileContract, address _treasuryContract) — store as immutable
+
+STRUCT: Subscription { address subscriber, address creator, uint8 tierId, uint256 startTime, uint256 expiry, bool active }
+
+STATE: mapping(address => mapping(address => Subscription)) public subscriptions
+
+FUNCTIONS:
+- subscribe(address creator, uint8 tierId) external payable
+  require: creator registered (call profileContract.isRegistered)
+  require: tier is active (call profileContract.getTier)
+  require: msg.value == tier.price (exact payment)
+  store subscription with expiry = block.timestamp + 30 days
+  call ITreasury(treasuryContract).receivePayment{value: msg.value}(creator)
+  emit Subscribed(subscriber, creator, tierId, expiry)
+- renewSubscription(address creator) external payable
+  extend expiry by 30 days, forward payment to treasury
+  emit Renewed(subscriber, creator, newExpiry)
+- cancelSubscription(address creator) external
+  set subscription.active = false, NO refund (explicit policy)
+  emit Cancelled(subscriber, creator)
+- checkAccess(address subscriber, address creator, uint8 tierId) external view returns (bool)
+  returns true if: sub.active && sub.tierId >= tierId && sub.expiry > block.timestamp
+- getSubscription(address subscriber, address creator) external view returns (Subscription memory)
+
+INTERFACE needed: ITreasury with receivePayment(address creator) payable
+
+Tests: subscribe success, wrong payment reverts, checkAccess true, expired returns false, cancel sets active=false.
+Run forge test -- all must pass.</div>
+
+<div class="section">Step 3.4 — Generate CreatorTreasury.sol (Day 3)</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, create CreatorTreasury.sol in creato3/src/.
+
+STATE:
+address public owner
+address public authorizedCaller  // SubscriptionManager address
+mapping(address => uint256) public balances
+mapping(address => uint256) public totalEarned
+
+CONSTRUCTOR: constructor(address _owner)
+
+FUNCTIONS:
+- setAuthorizedCaller(address _caller) external (onlyOwner, called once after deployment)
+- receivePayment(address _creator) external payable
+  require: msg.sender == authorizedCaller
+  balances[_creator] += msg.value
+  totalEarned[_creator] += msg.value
+  emit PaymentReceived(_creator, msg.value)
+- withdraw() external
+  amount = balances[msg.sender]
+  require: amount > 0
+  *** ZERO PLATFORM FEE: NO percentage deduction here ***
+  balances[msg.sender] = 0
+  (bool success,) = payable(msg.sender).call{value: amount}('')
+  require: success
+  emit Withdrawal(msg.sender, amount, block.timestamp)
+- getBalance(address _creator) external view returns (uint256)
+- getTotalEarned(address _creator) external view returns (uint256)
+
+Tests: receivePayment increments balance, withdraw sends FULL amount with zero fee (verify amount received == deposited), unauthorized caller reverts.
+Run forge test -- all must pass.</div>
+
+<div class="section">Step 3.5 — Run all tests</div>
+<div class="code">cd creato3
+forge build
+forge test -vvv
+# Expected: 15+ tests pass, 0 fail
+# NEVER deploy with failing tests</div>
+
+<div class="section">Step 3.6 — Deploy all three contracts in order</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, deploy my three Creato3 contracts to appchain creato3-1 using my Gas Station account.
+
+Deploy in this exact order:
+1. Deploy CreatorProfile.sol — no constructor args
+2. Deploy CreatorTreasury.sol — pass Gas Station address as owner
+3. Deploy SubscriptionManager.sol — pass CreatorProfile address and CreatorTreasury address as constructor args
+
+After all three are deployed:
+- Call treasury.setAuthorizedCaller(subscriptionManagerAddress)
+- Register a test creator via Gas Station with username "priya.init"
+- Create 2 tiers: Basic (1000000000000000 wei) and Premium (5000000000000000 wei)
+
+Return all three addresses clearly labelled: PROFILE_ADDR, TREASURY_ADDR, SUB_ADDR</div>
+
+<div class="step">
+<div class="step-label">Manual deployment (if needed)</div>
+<div class="code">export EVM_RPC=http://localhost:8545
+export GAS_STATION_PK=0x...  # from minitiad keys export
+
+# 1. Deploy CreatorProfile
+forge create src/CreatorProfile.sol:CreatorProfile \
+  --rpc-url $EVM_RPC --private-key $GAS_STATION_PK --broadcast
+export PROFILE_ADDR=0x<deployed-address>
+
+# 2. Deploy CreatorTreasury
+forge create src/CreatorTreasury.sol:CreatorTreasury \
+  --rpc-url $EVM_RPC --private-key $GAS_STATION_PK \
+  --constructor-args $GAS_STATION_ADDR --broadcast
+export TREASURY_ADDR=0x<deployed-address>
+
+# 3. Deploy SubscriptionManager
+forge create src/SubscriptionManager.sol:SubscriptionManager \
+  --rpc-url $EVM_RPC --private-key $GAS_STATION_PK \
+  --constructor-args $PROFILE_ADDR $TREASURY_ADDR --broadcast
+export SUB_ADDR=0x<deployed-address>
+
+# 4. Critical: authorise SubscriptionManager to call Treasury
+cast send $TREASURY_ADDR 'setAuthorizedCaller(address)' $SUB_ADDR \
+  --rpc-url $EVM_RPC --private-key $GAS_STATION_PK</div>
+</div>
+
+<div class="section">Step 3.7 — CLI smoke tests (verify before building frontend)</div>
+<div class="code"># Test CreatorProfile
+cast send $PROFILE 'registerCreator(string,string,string,string)' \
+  'Priya Demo' 'Coding tutorials' 'coding' 'priya.init' \
+  --rpc-url $EVM_RPC --private-key $GAS_STATION_PK
+
+cast call $PROFILE 'isRegistered(address)(bool)' $GAS_STATION_ADDR --rpc-url $EVM_RPC
+# Expected: true
+
+cast send $PROFILE 'createTier(uint256,string,string)' \
+  1000000000000000 'Basic' 'Access to all posts' \
+  --rpc-url $EVM_RPC --private-key $GAS_STATION_PK
+
+# Test SubscriptionManager
+cast send $SUB 'subscribe(address,uint8)' $GAS_STATION_ADDR 0 \
+  --value 1000000000000000 --rpc-url $EVM_RPC --private-key $GAS_STATION_PK
+
+cast call $SUB 'checkAccess(address,address,uint8)(bool)' \
+  $GAS_STATION_ADDR $GAS_STATION_ADDR 0 --rpc-url $EVM_RPC
+# Expected: true
+
+# Test zero-fee proof — THIS IS YOUR DEMO MOMENT
+BEFORE=$(cast balance $GAS_STATION_ADDR --rpc-url $EVM_RPC)
+cast send $TREASURY 'withdraw()' --rpc-url $EVM_RPC --private-key $GAS_STATION_PK
+AFTER=$(cast balance $GAS_STATION_ADDR --rpc-url $EVM_RPC)
+# AFTER - BEFORE should equal 1000000000000000 (full amount, no deduction)
+# Screenshot this. Use it in your demo.</div>
+
+<div class="target">
+<div class="target-label">✓ Day 2–3 target — contracts done</div>
+<div class="target-text">• forge test: 15+ pass, 0 fail<br>• All 3 contracts deployed to creato3-1<br>• setAuthorizedCaller called<br>• checkAccess returns true after subscribe<br>• Zero-fee proof: AFTER balance == BEFORE + subscription amount<br>• Save: PROFILE_ADDR, TREASURY_ADDR, SUB_ADDR (needed for .env and submission.json)</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 4: AI INTEGRATION -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#FAEEDA;color:#854F0B">4</div>
+<div class="ph-meta"><div class="ph-title">AI Integration — Anthropic API (Offchain)</div><div class="ph-days">Day 4 — Smart pricing + revenue prediction + content strategy</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="step">
+<div class="step-label">Architecture rule (from official Initia AI track guidance)</div>
+<div class="step-desc">AI inference runs offchain. Blockchain handles payments and state. AI provides pricing advice, revenue comparison, content strategy — all via Anthropic API HTTP calls from the frontend. No AI onchain.</div>
+</div>
+
+<div class="section">Step 4.1 — Setup .env (NEVER commit this)</div>
+<div class="code"># creato3-frontend/.env
+VITE_ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx
+VITE_PROFILE_CONTRACT=0x...
+VITE_SUBSCRIPTION_CONTRACT=0x...
+VITE_TREASURY_CONTRACT=0x...
+VITE_CHAIN_ID=creato3-1
+VITE_EVM_RPC=http://localhost:8545
+VITE_COSMOS_RPC=http://localhost:26657
+VITE_REST_API=http://localhost:1317
+
+# Add to .gitignore IMMEDIATELY:
+echo '.env' >> .gitignore
+echo '.env.local' >> .gitignore</div>
+
+<div class="section">Step 4.2 — AI service module (src/api/creatorAI.js)</div>
+<div class="code">// src/api/creatorAI.js
+const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY
+const MODEL = 'claude-sonnet-4-20250514'
+
+async function callAI(prompt) {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }] })
+  })
+  const d = await r.json()
+  return JSON.parse(d.content[0].text.replace(/```json|```/g, '').trim())
+}
+
+// Feature 1: Smart Pricing
+export const getSmartPricing = ({ niche, subscribers, platform }) =>
+  callAI(`Creator economy expert. ${niche} creator, ${subscribers} followers on ${platform}.
+Recommend 3 tiers. JSON only — no markdown:
+{"tiers":[{"name","price_usd","description","benefits":[],"target_audience"}],"reasoning","expected_conversion_pct"}`)
+
+// Feature 2: Revenue Prediction (THE DEMO KILLER)
+export const getRevenuePrediction = ({ tiers, subscriberCount, conversionPct }) =>
+  callAI(`Compare monthly earnings. ${subscriberCount} audience, ${conversionPct}% conversion.
+Tiers: ${JSON.stringify(tiers)}. Creato3 (0% fee) vs Patreon (10%) vs Substack (10%).
+JSON: {"monthly_creato3","monthly_patreon","monthly_substack","annual_extra_creato3","key_insight"}`)
+
+// Feature 3: Content Strategy
+export const getContentStrategy = ({ niche, audience }) =>
+  callAI(`Tier benefits for ${niche} creator targeting ${audience}.
+Maximise conversion + retention. JSON: {"tiers":[{"name","benefits":[],"why_subscribers_stay","cadence"}],"top_tip"}`)</div>
+
+<div class="section">Step 4.3 — Wire AI into UI</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Create AIPricingAdvisor.jsx in creato3-frontend/src/components/ with:
+
+SECTION 1 - Input form:
+- Text input: 'Your niche' (e.g. coding, music, cooking)
+- Slider: Audience size (100 to 100,000) with live number display
+- Dropdown: Platform (YouTube / Twitter / Newsletter / Instagram)
+- Button: 'Get AI Pricing' → calls getSmartPricing(), shows spinner
+
+SECTION 2 - Tier cards (shown after AI responds):
+- Three cards side by side: names from AI response
+- Each: name, price/month, description, benefits list
+- Button: 'Apply this tier' → opens create-tier form pre-filled
+
+SECTION 3 - Revenue prediction (below tiers):
+- Slider: Expected conversion rate (1% to 10%)
+- Calls getRevenuePrediction() when tier data available
+- Bar chart: Creato3 vs Patreon vs Substack monthly earnings
+- Large green text: 'You keep $X extra per year on Creato3'
+- This number must be prominent — it is the core demo moment
+
+SECTION 4 - Content strategy:
+- Button: 'Get content ideas for each tier'
+- Calls getContentStrategy()
+- Shows bulleted benefit suggestions per tier</div>
+
+<div class="target">
+<div class="target-label">✓ Day 4 target</div>
+<div class="target-text">• getSmartPricing() returns valid 3-tier JSON in console<br>• getRevenuePrediction() shows Creato3 > Patreon difference<br>• getContentStrategy() returns tier benefit suggestions<br>• AIPricingAdvisor component renders tier cards<br>• Revenue bar chart visible with green savings number</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 5: NATIVE FEATURES -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#FAECE7;color:#993C1D">5</div>
+<div class="ph-meta"><div class="ph-title">All Three Native Features</div><div class="ph-days">Day 5–6 — Interwoven Bridge + Initia Usernames + Auto-signing</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">Feature 1 — Interwoven Bridge (BridgeButton.jsx)</div>
+<div class="step">
+<div class="step-desc">Solves subscriber onboarding: new fans who have INIT on L1 but nothing on creato3-1 can bridge with one click. Collapses 15 manual steps into 1 button press.</div>
+<div class="code">// BridgeButton.jsx — per official Initia InterwovenKit docs
+import { useInterwovenKit } from '@initia/interwovenkit-react'
+
+export function BridgeButton({ requiredAmount, onBridgeComplete }) {
+  const { address, openBridge } = useInterwovenKit()
+
+  const handleBridge = () => openBridge({
+    denoms: ['uinit'],      // accept INIT from Initia L1
+    chainId: 'creato3-1',   // destination: your appchain
+  })
+
+  if (!address) return null
+  return (
+    <div>
+      <p>You need {requiredAmount} INIT to subscribe.</p>
+      <button onClick={handleBridge}>Bridge INIT from Initia L1 →</button>
+      <p style={{ fontSize: 12, color: 'gray' }}>Arrives in ~30 seconds via Initia IBC</p>
+    </div>
+  )
+}</div>
+<div class="warn">
+<div class="warn-label">⚠ Local testing note (from official Initia docs)</div>
+<div class="warn-text">The Interwoven UI only resolves registered chain IDs, so your local appchain may not appear in the bridge dropdown during local testing. This is expected behaviour. Your button will still open the modal. Explain the full flow in your README and demo video.</div>
+</div>
+</div>
+
+<div class="section">Feature 2 — Initia Usernames (.init) — register first</div>
+<div class="step">
+<div class="step-label">Register your .init username (one-time, in browser)</div>
+<div class="step-desc">1. Go to app.testnet.initia.xyz/usernames<br>2. Connect wallet (Keplr or Leap)<br>3. Search for your name (e.g. 'priya', 'creato3')<br>4. CRITICAL: Check "Set as primary name" — without this, username returns null<br>5. Click Register and approve the transaction<br>6. Your .init name appears in the Initia App within 60 seconds</div>
+<div class="warn">
+<div class="warn-label">⚠ Primary name is mandatory</div>
+<div class="warn-text">If you skip "Set as primary name", useInterwovenKit().username will always return null even after registration. The name registers but does not resolve. This is the most common username integration mistake.</div>
+</div>
+</div>
+
+<div class="step">
+<div class="step-label">Display .init names everywhere (per official docs)</div>
+<div class="code">// Per official Initia docs — username is resolved automatically
+import { useInterwovenKit } from '@initia/interwovenkit-react'
+
+const truncate = a => a ? `${a.slice(0,6)}...${a.slice(-4)}` : ''
+
+function Header() {
+  const { address, username, openConnect, openWallet } = useInterwovenKit()
+  if (!address) return <button onClick={openConnect}>Connect Wallet</button>
+  return (
+    <button onClick={openWallet}>
+      {/* Shows 'priya.init' if registered, '0x3f8a...2b1c' if not */}
+      {username ?? truncate(address)}
+    </button>
+  )
+}
+
+// For creator profiles — read .init name from your contract
+async function getCreatorDisplayName(creatorAddress) {
+  const profile = await publicClient.readContract({
+    address: import.meta.env.VITE_PROFILE_CONTRACT,
+    abi: CREATOR_PROFILE_ABI,
+    functionName: 'getCreator', args: [creatorAddress],
+  })
+  // profile.initUsername is 'priya.init' (stored at registration)
+  return profile.initUsername || truncate(creatorAddress)
+}</div>
+</div>
+
+<div class="section">Feature 3 — Auto-signing (main.jsx + SubscribeFlow.jsx)</div>
+<div class="step">
+<div class="step-label">main.jsx — InterwovenKit provider with enableAutoSign</div>
+<div class="code">// creato3-frontend/src/main.jsx
+// Per official Initia InterwovenKit docs — EVM appchain setup
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createConfig, http, WagmiProvider } from 'wagmi'
+import { mainnet } from 'wagmi/chains'
+import { InterwovenKitProvider, TESTNET, injectStyles } from '@initia/interwovenkit-react'
+import InterwovenKitStyles from '@initia/interwovenkit-react/styles.js'
+import App from './App'
+
+const queryClient = new QueryClient()
+const wagmiConfig = createConfig({ chains: [mainnet], transports: { [mainnet.id]: http() } })
+
+const customChain = {
+  chain_id: 'creato3-1',
+  chain_name: 'Creato3',
+  network_type: 'testnet',
+  bech32_prefix: 'init',
+  apis: {
+    rpc: [{ address: 'http://localhost:26657' }],
+    rest: [{ address: 'http://localhost:1317' }],
+    indexer: [{ address: 'http://localhost:8080' }],
+  },
+  fees: { fee_tokens: [{ denom: 'umin', fixed_min_gas_price: 0,
+    low_gas_price: 0, average_gas_price: 0, high_gas_price: 0 }] },
+  staking: { staking_tokens: [{ denom: 'umin' }] },
+  native_assets: [{ denom: 'umin', name: 'Min', symbol: 'MIN', decimals: 6 }],
+  metadata: { is_l1: false, minitia: { type: 'minievmchain' } }, // EVM type
+}
+
+injectStyles(InterwovenKitStyles)
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <WagmiProvider config={wagmiConfig}>
+        <InterwovenKitProvider
+          {...TESTNET}
+          defaultChainId='creato3-1'
+          customChain={customChain}
+          customChains={[customChain]}
+          enableAutoSign  // ← enables Ghost Wallet
+        >
+          <App />
+        </InterwovenKitProvider>
+      </WagmiProvider>
+    </QueryClientProvider>
+  </StrictMode>
+)</div>
+</div>
+
+<div class="step">
+<div class="step-label">SubscribeFlow.jsx — auto-sign vs normal sign</div>
+<div class="code">// Per official Initia EVM docs: typeUrl = /minievm.evm.v1.MsgCall
+import { ethers } from 'ethers'
+import { useInterwovenKit } from '@initia/interwovenkit-react'
+import SUBSCRIPTION_ABI from '../abis/SubscriptionManager.json'
+
+const SUB_ADDR = import.meta.env.VITE_SUBSCRIPTION_CONTRACT
+const CHAIN_ID = import.meta.env.VITE_CHAIN_ID
+
+export function SubscribeButton({ creator, tierId, price }) {
+  const { initiaAddress, requestTxSync, autoSign } = useInterwovenKit()
+
+  const handleSubscribe = async () => {
+    const iface = new ethers.Interface(SUBSCRIPTION_ABI)
+    const data = iface.encodeFunctionData('subscribe', [creator, tierId])
+
+    const msg = {
+      typeUrl: '/minievm.evm.v1.MsgCall',  // EVM tx per official docs
+      value: { sender: initiaAddress, contractAddr: SUB_ADDR,
+               input: data, value: price.toString() },
+    }
+
+    // KEY: auto-sign = no popup. Normal sign = popup.
+    if (autoSign.isEnabled) {
+      await autoSign.requestTx({ chainId: CHAIN_ID, messages: [msg] })
+      // Ghost Wallet signs invisibly — zero wallet popup
+    } else {
+      await requestTxSync({ chainId: CHAIN_ID, messages: [msg] })
+      // Normal wallet popup appears
+    }
+  }
+
+  return (
+    <div>
+      <label>
+        <input type='checkbox' checked={autoSign.isEnabled}
+          onChange={e => e.target.checked ? autoSign.enable() : autoSign.disable()} />
+        One-tap mode (no wallet popup per transaction)
+      </label>
+      <button onClick={handleSubscribe}>
+        Subscribe · {ethers.formatEther(price)} INIT/month
+      </button>
+    </div>
+  )
+}</div>
+</div>
+
+<div class="target">
+<div class="target-label">✓ Day 5–6 target — all three native features</div>
+<div class="target-text">• Bridge button opens InterwovenKit modal<br>• .init username shows in header (not hex address)<br>• Auto-sign toggle: enable → subscribe with zero popup<br>• Auto-sign toggle: disable → wallet popup reappears<br>• All three native features visible in the UI</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 6: FRONTEND -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#EAF3DE;color:#3B6D11">6</div>
+<div class="ph-meta"><div class="ph-title">Frontend — React + InterwovenKit (All Screens)</div><div class="ph-days">Day 5–8 — creator dashboard, subscriber flow, discover page</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">Step 6.1 — Scaffold frontend</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, scaffold a Vite + React app named `creato3-frontend` in my project directory.
+
+Install: @initia/interwovenkit-react @tanstack/react-query wagmi viem ethers recharts
+
+Create this src/ file structure:
+components/
+  Header.jsx
+  CreatorDashboard.jsx
+  CreatorProfilePage.jsx (public page fans visit — route /creator/:address)
+  SubscribeFlow.jsx
+  AIPricingAdvisor.jsx
+  BridgeButton.jsx
+  DiscoverPage.jsx
+api/
+  creatorAI.js
+abis/
+  CreatorProfile.json
+  SubscriptionManager.json
+  CreatorTreasury.json
+config/
+  contracts.js</div>
+
+<div class="section">Step 6.2 — contracts.js (central config)</div>
+<div class="code">// src/config/contracts.js
+export const CONTRACTS = {
+  profile: import.meta.env.VITE_PROFILE_CONTRACT,
+  subscription: import.meta.env.VITE_SUBSCRIPTION_CONTRACT,
+  treasury: import.meta.env.VITE_TREASURY_CONTRACT,
+}
+export const CHAIN_ID = import.meta.env.VITE_CHAIN_ID
+export const EVM_RPC = import.meta.env.VITE_EVM_RPC</div>
+
+<div class="section">Step 6.3 — CreatorDashboard.jsx</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Build CreatorDashboard.jsx — the page creators use to manage their profile.
+
+STATE A (not registered):
+- Form: Display Name, Bio (textarea 280 chars), Category (select: coding/music/writing/art/gaming/other), .init Username (with note: register at app.testnet.initia.xyz/usernames)
+- Large button: 'Get AI Pricing Help' → opens AIPricingAdvisor
+- Register button → calls CreatorProfile.registerCreator() via requestTxSync
+
+STATE B (registered):
+- Stats row: Total Earned (from getTotalEarned) · Withdrawable Now (from getBalance) · Active Subscribers · This Month
+- Withdraw button → calls CreatorTreasury.withdraw(), shows "You receive 100% — zero platform fee"
+- Tier management: list current tiers with edit buttons
+- Add Tier button → form: name, price in INIT, description
+- 'Get AI Pricing Help' always visible for improving tiers
+- Subscriber list showing .init names or truncated addresses + expiry dates</div>
+
+<div class="section">Step 6.4 — CreatorProfilePage.jsx (what fans see)</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Build CreatorProfilePage.jsx at route /creator/:address — the public page fans visit.
+
+Layout:
+- Header: large avatar (initials circle), creator display name, .init username (from getCreator()), category badge, bio, subscriber count
+- Tier cards grid: each shows name, price/month in INIT, description, benefits, Subscribe button
+- SubscribeFlow.jsx handles each subscribe button:
+  1. Check user balance vs tier price
+  2. If insufficient: show BridgeButton
+  3. If sufficient: show subscribe button with auto-sign toggle
+  4. On success: show 'Access granted!' confirmation
+- Access status banner at top: if subscribed, show 'You are subscribed · Tier: Basic · Renews: [date]' with Renew button</div>
+
+<div class="section">Step 6.5 — DiscoverPage.jsx (the 500 wallets engine)</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE:</div>
+<div class="prompt">Build DiscoverPage.jsx at route /discover — this page drives subscriber acquisition.
+
+Features:
+- Hero: 'Discover creators. Support directly. Zero platform fee.'
+- Filter bar: All / Coding / Music / Writing / Art / Gaming
+- Search: by display name or .init username
+- Creator cards grid (4 per row desktop, 2 mobile): avatar, .init name, display name, category badge, subscriber count, lowest tier price, Subscribe button
+- Trending section: top 3 creators by subscriber count
+- 'Are you a creator?' CTA linking to /dashboard
+
+Data: read registered creators from CreatorRegistered events, or index on first load.</div>
+
+<div class="section">Step 6.6 — Fund browser wallet and run locally</div>
+<div class="code">cd creato3-frontend
+npm install
+npm run dev
+# Opens http://localhost:5173</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE (replace with your wallet address):</div>
+<div class="prompt">Using the `initia-appchain-dev` skill, please fund my personal wallet <PASTE_YOUR_INIT1_ADDRESS> with 1 INIT on L1 and 100 of my appchain native tokens (umin) on L2 (creato3-1).</div>
+
+<div class="target">
+<div class="target-label">✓ Day 5–8 target — frontend complete</div>
+<div class="target-text">• Frontend runs at http://localhost:5173<br>• Wallet connects to creato3-1 via Keplr or Leap<br>• Creator registration flow works end-to-end<br>• Subscribe flow works (bridge → subscribe → access granted)<br>• AI pricing shows 3 tier cards with revenue comparison<br>• All three native features visible and working<br>• Discover page shows creator cards</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 7: SMOKE TESTS -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#F1EFE8;color:#5F5E5A">7</div>
+<div class="ph-meta"><div class="ph-title">Full Smoke Tests — Verify Everything Before Demo</div><div class="ph-days">Day 9 — every CLI command, every checklist item</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">Infrastructure health checks</div>
+<div class="code"># Is appchain producing blocks?
+minitiad status --node http://localhost:26657 | jq .SyncInfo.latest_block_height
+# Expected: number that increases each run
+
+# Gas Station balance?
+minitiad query bank balances \
+  $(minitiad keys show gas-station --keyring-backend test -a) \
+  --node http://localhost:26657
+# Expected: umin balance > 0
+
+# OPinit executor running?
+weave opinit log executor | tail -5   # no ERROR messages
+
+# Relayer running?
+weave relayer log | tail -5           # recent activity</div>
+
+<div class="section">Full pre-demo checklist</div>
+<div class="table-wrap">
+<table>
+<tr><th>Test item</th><th>Expected result</th></tr>
+<tr><td>forge test -vvv</td><td>15+ pass, 0 fail</td></tr>
+<tr><td>registerCreator() on-chain</td><td>isRegistered returns true</td></tr>
+<tr><td>createTier() stores correctly</td><td>getTier returns correct tier data</td></tr>
+<tr><td>subscribe() with exact payment</td><td>Transaction succeeds</td></tr>
+<tr><td>checkAccess() after subscribe</td><td>Returns true</td></tr>
+<tr><td>CreatorTreasury balance after subscribe</td><td>= subscription payment amount</td></tr>
+<tr><td>withdraw() zero-fee verified</td><td>AFTER - BEFORE = full subscription amount</td></tr>
+<tr><td>AI pricing returns 3 tiers</td><td>Valid JSON with prices and benefits</td></tr>
+<tr><td>Revenue prediction shows Creato3 > Patreon</td><td>Green savings number visible</td></tr>
+<tr><td>Bridge modal opens</td><td>InterwovenKit drawer appears on click</td></tr>
+<tr><td>.init username in header</td><td>priya.init not 0x3f8a...</td></tr>
+<tr><td>Auto-sign subscribe (enabled)</td><td>Zero wallet popup</td></tr>
+<tr><td>Auto-sign subscribe (disabled)</td><td>Wallet popup appears</td></tr>
+<tr><td>Discover page shows creator cards</td><td>Grid renders with category filter</td></tr>
+<tr><td>Full E2E flow in browser</td><td>Creator registers → fan subscribes → creator withdraws</td></tr>
+</table>
+</div>
+
+<div class="warn">
+<div class="warn-label">⚠ Never record your demo with untested code</div>
+<div class="warn-text">Every bug found during demo recording costs 30+ minutes. Run every CLI test and check every browser flow before opening Loom or QuickTime. This section takes 20 minutes and saves hours.</div>
+</div>
+</div>
+</div>
+
+<!-- PHASE 8: SUBMISSION -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#E6F1FB;color:#185FA5">8</div>
+<div class="ph-meta"><div class="ph-title">Submission Package — Demo, JSON, README</div><div class="ph-days">Day 10–11 — everything judges need</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+
+<div class="section">submission.json (required path: .initia/submission.json)</div>
+<div class="code">{
+  "project_name": "Creato3",
+  "repo_url": "https://github.com/YOUR_USERNAME/creato3",
+  "commit_sha": "<run: git rev-parse HEAD after final commit>",
+  "rollup_chain_id": "creato3-1",
+  "deployed_address": "0x<SubscriptionManager address — NOT init1 format>",
+  "vm": "evm",
+  "native_feature": "auto-signing",
+  "core_logic_path": "creato3/src/SubscriptionManager.sol",
+  "native_feature_frontend_path": "creato3-frontend/src/components/SubscribeFlow.jsx",
+  "demo_video_url": "https://youtu.be/YOUR_VIDEO_ID"
+}</div>
+<div class="table-wrap">
+<table>
+<tr><th>Field</th><th>Common mistake to avoid</th></tr>
+<tr><td>deployed_address</td><td>Must be 0x format (SubscriptionManager). NOT init1... format</td></tr>
+<tr><td>vm</td><td>Must be exactly the string "evm" (lowercase)</td></tr>
+<tr><td>native_feature</td><td>Must be exactly "auto-signing" (one of three valid strings)</td></tr>
+<tr><td>commit_sha</td><td>40-char hex from git rev-parse HEAD. Run AFTER your final commit</td></tr>
+<tr><td>core_logic_path</td><td>File must actually exist at this path at commit_sha</td></tr>
+<tr><td>demo_video_url</td><td>Must be public YouTube or Loom. Test in incognito before submitting</td></tr>
+</table>
+</div>
+
+<div class="section">README.md — Initia Hackathon submission block</div>
+<div class="code">## Initia Hackathon Submission
+
+- **Project Name**: Creato3
+
+### Project Overview
+
+Creato3 is an AI-powered creator monetization platform on Initia.
+Creators publish subscription tiers, subscribers pay on-chain with zero gas fees,
+and AI helps creators maximise earnings with smart pricing and revenue predictions.
+Zero platform fee — 100% of every subscription goes to the creator.
+Target: the $250B creator economy. 200M+ creators pay 8–20% to Patreon, Substack,
+and YouTube every month. Creato3 takes 0%.
+
+### Implementation Detail
+
+- **Custom Implementation**: Three Solidity contracts on Initia EVM appchain.
+  CreatorProfile stores identity and tiers. SubscriptionManager handles billing lifecycle.
+  CreatorTreasury enforces zero-fee withdrawals. Offchain AI (Anthropic API) provides
+  smart pricing and revenue comparison — visible, practical features creators use
+  before going live.
+
+- **Native Feature**: Auto-signing enables one-tap subscriptions with no wallet popups.
+  Interwoven Bridge lets fans fund their wallet from Initia L1 in one click.
+  Initia Usernames show creator.init on every profile instead of 0x3f8a...
+
+### How to Run Locally
+
+1. Complete Set Up Your Appchain with chain ID: creato3-1 (EVM VM)
+2. Deploy: cd creato3 && forge build && forge test && forge create...
+   Copy addresses to creato3-frontend/.env
+3. Add Anthropic API key to creato3-frontend/.env
+4. Run: cd creato3-frontend && npm install && npm run dev
+5. Open http://localhost:5173 and connect Keplr or Leap wallet</div>
+
+<div class="section">Demo video script — 2 minutes, timestamped</div>
+<div class="table-wrap">
+<table>
+<tr><th>Time</th><th>What to say and show</th></tr>
+<tr><td>0:00–0:12</td><td>"Patreon takes 10%. 200 million creators lose billions every year. Creato3 takes zero." Show Patreon fee page screenshot.</td></tr>
+<tr><td>0:12–0:35</td><td>Type 'coding tutorials' into niche, drag audience to 5,000, click Get AI Pricing. Show 3 tier cards. Say "AI recommends $5/$15/$40 for this niche."</td></tr>
+<tr><td>0:35–0:50</td><td>Point to bar chart. "At $15 average, 200 subscribers — $600/month on Creato3, $540 on Patreon. That extra $720/year compounds."</td></tr>
+<tr><td>0:50–1:05</td><td>Click Bridge INIT from L1. Modal opens. "New subscribers fund their wallet from L1 in one click. Zero configuration."</td></tr>
+<tr><td>1:05–1:25</td><td>Enable auto-sign toggle. Click Subscribe. Zero popup. "No wallet popup. Auto-signing uses a Ghost Wallet. Creato3 feels like a web2 product."</td></tr>
+<tr><td>1:25–1:40</td><td>Show treasury balance. Click Withdraw. Show 100% received. Point at code: "No percentage calculation. That is the entire difference."</td></tr>
+<tr><td>1:40–1:55</td><td>Show .init username in header — priya.init. "Identity is human-readable. priya.init, not 0x3f8a..."</td></tr>
+<tr><td>1:55–2:00</td><td>"While 14 teams optimise DeFi yields, we built for 200 million creators who just want to get paid. Creato3."</td></tr>
+</table>
+</div>
+
+<div class="section">Final submission checklist</div>
+<div class="step">
+<div class="code">git add .
+git commit -m 'final submission'
+git rev-parse HEAD  # copy the 40-char SHA to submission.json
+
+# Verify:
+cat .initia/submission.json  # all fields filled, correct formats
+cat .gitignore               # .env is listed
+git log --oneline -1         # confirm latest commit
+# Push and make repo PUBLIC on GitHub</div>
+</div>
+<div class="table-wrap">
+<table>
+<tr><th>Item</th><th>Status</th></tr>
+<tr><td>.initia/submission.json — all 10 fields filled</td><td>☐</td></tr>
+<tr><td>deployed_address is SubscriptionManager in 0x format</td><td>☐</td></tr>
+<tr><td>README.md has Initia Hackathon Submission section</td><td>☐</td></tr>
+<tr><td>Demo video 1–3 min, public URL, tested in incognito</td><td>☐</td></tr>
+<tr><td>commit_sha matches final commit (git rev-parse HEAD)</td><td>☐</td></tr>
+<tr><td>All file paths in submission.json exist at commit_sha</td><td>☐</td></tr>
+<tr><td>.env is in .gitignore — no secrets in repo</td><td>☐</td></tr>
+<tr><td>Repo is public on GitHub</td><td>☐</td></tr>
+<tr><td>Submitted on DoraHacks before Apr 15 11PM UTC</td><td>☐</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- PHASE 9: DEBUGGING -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#F1EFE8;color:#5F5E5A">9</div>
+<div class="ph-meta"><div class="ph-title">Debugging Reference — Every Error and Fix</div><div class="ph-days">Reference throughout — M1 Mac specific issues included</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+<div class="table-wrap">
+<table>
+<tr><th>Error / Symptom</th><th>Fix</th></tr>
+<tr><td>weave: command not found</td><td>echo 'export PATH=$PATH:~/.weave/bin' >> ~/.zshrc && source ~/.zshrc</td></tr>
+<tr><td>minitiad: connection refused</td><td>weave rollup start -d (appchain stopped after reboot)</td></tr>
+<tr><td>forge not found after install (M1)</td><td>export PATH="$HOME/.foundry/bin:$PATH" >> ~/.zshrc && source ~/.zshrc</td></tr>
+<tr><td>forge build: Source not found</td><td>forge install OpenZeppelin/openzeppelin-contracts</td></tr>
+<tr><td>cast send: incorrect payment</td><td>msg.value must equal tier.price exactly in wei — not ETH</td></tr>
+<tr><td>treasury: unauthorized caller reverts</td><td>Call treasury.setAuthorizedCaller(subManagerAddr) — required post-deploy</td></tr>
+<tr><td>Port 3000 in use</td><td>lsof -i :3000 → kill PID, or change OPinit listen port</td></tr>
+<tr><td>Docker not running</td><td>Open Docker Desktop app, wait for green icon, then restart relayer</td></tr>
+<tr><td>Bridge modal won't open</td><td>Wallet must be connected. openBridge() requires active address.</td></tr>
+<tr><td>.init username shows null</td><td>Re-register and check "Set as primary name" — this checkbox is mandatory</td></tr>
+<tr><td>auto-sign enable fails</td><td>Wallet must be unlocked and connected. Retry after reconnecting.</td></tr>
+<tr><td>AI returns undefined</td><td>Check VITE_ANTHROPIC_API_KEY in .env — restart Vite after any .env change</td></tr>
+<tr><td>Frontend can't reach contracts</td><td>Verify all VITE_*_CONTRACT values in .env match deployed addresses exactly</td></tr>
+<tr><td>chain not found in requestTxSync</td><td>Verify chain_id in customChain is exactly 'creato3-1' (matches your weave init)</td></tr>
+<tr><td>EVM RPC vs Cosmos RPC confusion</td><td>Foundry (cast, forge): use localhost:8545. minitiad queries: use localhost:26657</td></tr>
+</table>
+</div>
+
+<div class="section">When you're stuck — official AI debug prompt</div>
+<div class="prompt-label">PASTE INTO CLAUDE CODE (include exact error):</div>
+<div class="prompt">Please find and fix this error directly in my codebase, then tell me what changed.
+
+[PASTE EXACT CONSOLE ERROR OR TERMINAL OUTPUT HERE]</div>
+
+<div class="section">After rebooting your Mac — always run these</div>
+<div class="code">weave rollup start -d
+weave opinit start executor -d
+# Relayer stays running via Docker — just keep Docker Desktop open
+
+# Verify everything is back:
+minitiad status --node http://localhost:26657 | jq .SyncInfo.latest_block_height</div>
+</div>
+</div>
+
+<!-- PHASE 10: 10-DAY SCHEDULE -->
+<div class="phase">
+<div class="ph" onclick="toggle(this)">
+<div class="ph-num" style="background:#FAEEDA;color:#854F0B">10</div>
+<div class="ph-meta"><div class="ph-title">10-Day Build Schedule + 500 Wallets Playbook</div><div class="ph-days">Apr 4–15 — day by day from today to submission</div></div>
+<span class="ph-arr">▶</span>
+</div>
+<div class="pb open">
+<div class="table-wrap">
+<table>
+<tr><th>Day</th><th>Date</th><th>Build target</th><th>If behind: what to cut</th></tr>
+<tr><td>Day 1</td><td>Apr 4</td><td>Environment only. Complete all of Phase 1+2. Verify appchain health. Do NOT write contract code until appchain confirmed running.</td><td>Nothing — this day is non-negotiable</td></tr>
+<tr><td>Day 2</td><td>Apr 5</td><td>CreatorProfile.sol + tests. Deploy. Smoke test with cast (register, create tier, query back).</td><td>Skip updateTier function if tight</td></tr>
+<tr><td>Day 3</td><td>Apr 6</td><td>SubscriptionManager.sol + CreatorTreasury.sol. Deploy both. setAuthorizedCaller. Full G.2–G.4 smoke tests. Screenshot zero-fee proof.</td><td>Skip renewSubscription initially</td></tr>
+<tr><td>Day 4</td><td>Apr 7</td><td>AI integration. creatorAI.js all three features. Test each in console.log before wiring to UI.</td><td>Drop content strategy AI, keep pricing + revenue</td></tr>
+<tr><td>Day 5</td><td>Apr 8</td><td>Frontend scaffold + main.jsx (InterwovenKit) + Header + CreatorDashboard (registration form).</td><td>Skip tier management UI, just show register form</td></tr>
+<tr><td>Day 6</td><td>Apr 9</td><td>CreatorProfilePage + SubscribeFlow. Core user journey. Wire subscribe to contract.</td><td>Skip discover page, link directly to creator address</td></tr>
+<tr><td>Day 7</td><td>Apr 10</td><td>MVP DEMO DAY. Wire all 3 native features. Test E2E in browser. Record rough video to spot bugs.</td><td>Polish secondary — working is mandatory</td></tr>
+<tr><td>Day 8</td><td>Apr 11</td><td>DiscoverPage + UI polish. Fix Day 7 bugs. Mobile responsiveness. Improve revenue comparison.</td><td>Complex filtering — just show all creators</td></tr>
+<tr><td>Day 9</td><td>Apr 12</td><td>Full smoke test (Phase 7). Every CLI command. Fix issues. Begin README and submission.json.</td><td>Nothing — this day is about verifying</td></tr>
+<tr><td>Day 10</td><td>Apr 13</td><td>Demo video. 2 practice runs, then record following Phase 8 script. Upload to YouTube Unlisted.</td><td>Multiple takes — 2 practice then record</td></tr>
+<tr><td>Day 11</td><td>Apr 14</td><td>Final commit. git rev-parse HEAD. Fill submission.json. Push. Verify repo public. Submit on DoraHacks.</td><td>No new features today</td></tr>
+<tr><td>Buffer</td><td>Apr 15</td><td>Fix last-minute issues. Deadline is 11PM UTC.</td><td>—</td></tr>
+</table>
+</div>
+
+<div class="section">500 Wallets Playbook ($2,500 milestone)</div>
+<div class="step">
+<div class="step-label">The creator pitch — use this exact message</div>
+<div class="step-desc">Never mention blockchain until they ask. Lead with the financial benefit.</div>
+<div class="code">Subject: You're leaving 10% on the table every month
+
+Hi [Name],
+
+I built a creator monetization platform on Initia blockchain.
+Here is the one difference that matters:
+
+- Patreon keeps 10% of your earnings
+- Creato3 keeps 0%
+
+If you earn $500/month from subscriptions,
+Creato3 puts an extra $600/year in your pocket.
+Setup takes 5 minutes.
+
+Want me to set up your profile?</div>
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>Week</th><th>Action and wallet target</th></tr>
+<tr><td>Week 1</td><td>Self-onboard as creator. Onboard 5 friends. Share Discover page on Twitter/Initia Discord. Target: 25 wallets</td></tr>
+<tr><td>Week 2</td><td>Onboard 5 real creators from your network — 10-min demo call. Target: 75 wallets</td></tr>
+<tr><td>Week 3–4</td><td>Post in indie creator communities: IndieHackers, Substack community, Patreon creators subreddit. Target: 250 wallets</td></tr>
+<tr><td>Week 5–8</td><td>Reach out to micro-influencers (2k–50k followers). 'Founding Creator' badge for first 50 creators. Target: 500+ wallets</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+<script>
+function toggle(ph) {
+  const body = ph.nextElementSibling;
+  const arr = ph.querySelector('.ph-arr');
+  body.classList.toggle('open');
+  arr.classList.toggle('open');
+}
+// All open on load except phases 7, 8, 9, 10
+document.querySelectorAll('.ph').forEach((h,i) => {
+  if (i < 6) { h.nextElementSibling.classList.add('open'); h.querySelector('.ph-arr').classList.add('open'); }
+});
+</script>
