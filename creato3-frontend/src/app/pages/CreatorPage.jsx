@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { useInterwovenKit } from '@initia/interwovenkit-react'
 import CREATOR_PROFILE_ABI from '../../abis/CreatorProfile.json'
 import SUBSCRIPTION_ABI from '../../abis/SubscriptionManager.json'
-import { Skeleton } from '../../components/Skeleton'
+import { Skeleton } from '../../shared/Skeleton'
 import { CONTRACTS } from '../../config/contracts'
 import { publicClient } from '../../config/evmClient'
 import { getCreatorContent } from '../../utils/contentStore'
@@ -30,6 +30,26 @@ const previewIcon = (kind, className) => {
   if (kind === 'video') return <VideoIcon className={className} />
   if (kind === 'image') return <ImageIcon className={className} />
   return <FileTextIcon className={className} />
+}
+
+const renderUnlockedPreview = (item, meta) => {
+  if (item.preview && meta.kind === 'image') {
+    return <img src={item.preview} alt={item.title} className="h-full w-full object-cover" />
+  }
+
+  if (item.preview && meta.kind === 'video') {
+    return (
+      <video className="h-full w-full object-cover" controls preload="metadata">
+        <source src={item.preview} />
+      </video>
+    )
+  }
+
+  if (item.preview && meta.kind === 'document' && item.preview.startsWith('data:application/pdf')) {
+    return <iframe src={item.preview} title={item.title} className="h-full w-full border-0" />
+  }
+
+  return previewIcon(meta.kind, 'h-14 w-14 text-[#6b7280] dark:text-[#9ca3af]')
 }
 
 export function CreatorPage() {
@@ -157,6 +177,18 @@ export function CreatorPage() {
   const creatorName = resolveCreatorName(creator, creatorAddress)
   const creatorGradient = pickGradient(creatorAddress)
   const creatorLinks = Object.entries(launchConfig?.links || {}).filter(([, value]) => value)
+  const isCreatorView = Boolean(hexAddress) && hexAddress.toLowerCase() === creatorAddress.toLowerCase()
+  const subscriptionExpiryMs = Number(subscription?.expiry || 0) * 1000
+  const hasContentAccess =
+    isCreatorView || (Boolean(subscription?.active) && subscriptionExpiryMs > Date.now())
+  const subscriptionExpiryLabel =
+    subscriptionExpiryMs > 0
+      ? new Intl.DateTimeFormat(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        }).format(subscriptionExpiryMs)
+      : ''
 
   const publishedContent = useMemo(() => {
     const uploaded = (launchConfig?.uploads || []).map((file) => ({
@@ -324,15 +356,44 @@ export function CreatorPage() {
                     key={item.id}
                     className="group rounded-2xl border border-[rgba(0,0,0,0.08)] bg-white p-6 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]"
                   >
-                    <div className="mb-4 flex h-48 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-[#f3f4f6] to-[#e5e7eb] dark:from-[#1a1a2e] dark:to-[#202034]">
-                      {item.preview && meta.kind === 'image' ? (
-                        <img src={item.preview} alt={item.title} className="h-full w-full object-cover" />
+                    <div className="relative mb-4 flex h-48 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-[#f3f4f6] to-[#e5e7eb] dark:from-[#1a1a2e] dark:to-[#202034]">
+                      {hasContentAccess ? (
+                        renderUnlockedPreview(item, meta)
+                      ) : item.preview && meta.kind === 'image' ? (
+                        <img
+                          src={item.preview}
+                          alt={item.title}
+                          className="h-full w-full scale-105 object-cover blur-md opacity-50"
+                        />
                       ) : (
-                        previewIcon(meta.kind, 'h-14 w-14 text-[#6b7280] dark:text-[#9ca3af]')
+                        previewIcon(meta.kind, 'h-14 w-14 text-[#6b7280] opacity-60 dark:text-[#9ca3af]')
                       )}
+
+                      {!hasContentAccess ? (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#111827]/58 p-6 text-center text-white">
+                          <p className="text-lg">Subscribers only</p>
+                          <p className="text-sm text-white/80">
+                            Subscribe to unlock this creator&apos;s premium content.
+                          </p>
+                        </div>
+                      ) : null}
                     </div>
                     <h3 className="mb-2 dark:text-white">{item.title}</h3>
                     <p className="text-sm text-[#6b7280] dark:text-[#9ca3af]">{meta.label}</p>
+                    {hasContentAccess && item.preview ? (
+                      <a
+                        href={item.preview}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-4 inline-flex rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm text-[#1f2937] transition-colors hover:border-[#93c5fd] hover:text-[#2563eb] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:border-[#93c5fd]"
+                      >
+                        {meta.kind === 'document'
+                          ? 'Open document'
+                          : meta.kind === 'video'
+                            ? 'Open video'
+                            : 'Open full image'}
+                      </a>
+                    ) : null}
                   </div>
                 )
               })}
@@ -340,7 +401,11 @@ export function CreatorPage() {
 
             <div className="mt-6 rounded-2xl border border-[rgba(0,0,0,0.08)] bg-gradient-to-r from-[#a7f3d0]/10 to-[#93c5fd]/10 p-8 text-center dark:border-[rgba(255,255,255,0.1)]">
               <p className="text-lg text-[#6b7280] dark:text-[#9ca3af]">
-                Subscribe to unlock all content and support this creator
+                {isCreatorView
+                  ? 'This is your live subscriber experience. Your premium uploads are visible here.'
+                  : hasContentAccess
+                    ? `Subscription active${subscriptionExpiryLabel ? ` until ${subscriptionExpiryLabel}` : ''}. Premium content unlocked.`
+                    : 'Subscribe to unlock all content and support this creator'}
               </p>
             </div>
           </div>
@@ -398,14 +463,16 @@ export function CreatorPage() {
               <button
                 onClick={handleSubscribe}
                 className="w-full rounded-full bg-gradient-to-r from-[#a7f3d0] to-[#93c5fd] px-8 py-4 shadow-lg transition-transform hover:scale-105 active:scale-95"
-                disabled={!selectedTier}
+                disabled={!selectedTier || isCreatorView || hasContentAccess}
                 type="button"
               >
-                Subscribe Now
+                {isCreatorView ? 'Your Creator Page' : hasContentAccess ? 'Subscription Active' : 'Subscribe Now'}
               </button>
 
               <p className="mt-4 text-center text-sm text-[#6b7280] dark:text-[#9ca3af]">
-                100% goes to the creator. No platform fees.
+                {hasContentAccess && !isCreatorView
+                  ? `You can now view premium posts from ${creatorName}.`
+                  : '100% goes to the creator. No platform fees.'}
               </p>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
   DollarSignIcon,
   RepeatIcon,
   ShieldIcon,
+  SparklesIcon,
   UserCircleIcon,
   UsersIcon,
   ZapIcon
@@ -166,7 +167,7 @@ export function LandingPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-8 shadow-lg transition-transform hover:scale-105 dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]">
             <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#a7f3d0]/20 to-[#6ee7b7]/20">
               <ShieldIcon className="h-7 w-7 text-[#6ee7b7]" />
@@ -199,6 +200,24 @@ export function LandingPage() {
               alice.init, not 0x3f8a2b...
             </p>
           </div>
+
+          <div className="rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-8 shadow-lg transition-transform hover:scale-105 dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]">
+            <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#fbcfe8]/20 to-[#ddd6fe]/20">
+              <SparklesIcon className="h-7 w-7 text-[#ddd6fe]" />
+            </div>
+            <h3 className="mb-3 dark:text-white">AI pricing agent</h3>
+            <p className="mb-4 leading-relaxed text-[#6b7280] dark:text-[#9ca3af]">
+              Reads your uploads, bio, and pitch; suggests subscription prices in{' '}
+              <strong className="text-[#374151] dark:text-[#e5e7eb]">INIT</strong> (via your API +
+              Groq, or a smart fallback).
+            </p>
+            <Link
+              className="inline-flex text-sm font-semibold text-[#6366f1] underline-offset-4 hover:underline dark:text-[#a5b4fc]"
+              to="/launch#ai-pricing"
+            >
+              Open launch → AI pricing
+            </Link>
+          </div>
         </div>
 
         <div className="mt-10 flex justify-center">
@@ -209,6 +228,44 @@ export function LandingPage() {
             Take the guided architecture tour
             <ArrowRightIcon className="h-5 w-5" />
           </Link>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-6 py-6">
+        <div className="rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-8 shadow-xl dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-[#6b7280] dark:text-[#9ca3af]">
+                Demo-ready flow
+              </p>
+              <h2 className="dark:text-white">Everything visible in one clean judge walkthrough</h2>
+            </div>
+            <Link
+              to="/build-guide"
+              className="rounded-full border border-[rgba(0,0,0,0.08)] px-5 py-3 text-sm transition-colors hover:bg-[#f3f4f6] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#1a1a2e]"
+            >
+              Open build guide
+            </Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-4">
+            {[
+              ['1', 'Create profile', 'Register a creator identity on-chain with a .init handle.'],
+              ['2', 'Run AI pricing', 'Generate INIT tiers plus reasoning from Groq.'],
+              ['3', 'Launch tier', 'Write the paid membership tier on-chain and show the tx hash.'],
+              ['4', 'Subscribe live', 'Open the creator page, subscribe, and verify the payment hash.']
+            ].map(([step, title, text]) => (
+              <div
+                key={step}
+                className="rounded-2xl bg-[#f9fafb] p-5 dark:bg-[#1a1a2e]"
+              >
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#a7f3d0] to-[#93c5fd] text-sm font-semibold text-[#111827]">
+                  {step}
+                </div>
+                <h3 className="mb-2 dark:text-white">{title}</h3>
+                <p className="text-sm text-[#6b7280] dark:text-[#9ca3af]">{text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

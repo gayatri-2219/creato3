@@ -1,4 +1,4 @@
-import { Component, StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createConfig, http, WagmiProvider } from 'wagmi'
@@ -11,14 +11,22 @@ import {
 import InterwovenKitStyles from '@initia/interwovenkit-react/styles.js'
 import App from './App.jsx'
 import {
+  AVERAGE_GAS_PRICE,
   CHAIN_ID,
   COSMOS_RPC,
+  FIXED_MIN_GAS_PRICE,
+  HAS_DEPLOYMENT_ENV_ISSUES,
   INDEXER_URL,
-  MISSING_PUBLIC_ENV_KEYS,
+  NATIVE_DENOM,
+  NATIVE_NAME,
+  NATIVE_SYMBOL,
+  HIGH_GAS_PRICE,
+  LOW_GAS_PRICE,
   REST_API
 } from './config/contracts'
-import { ThemeProvider } from './components/ThemeProvider.jsx'
-import { ToastProvider } from './components/ToastProvider.jsx'
+import { DeploymentIssueScreen, StartupErrorBoundary } from './app/components/StartupErrorBoundary.jsx'
+import { ThemeProvider } from './shared/ThemeProvider.jsx'
+import { ToastProvider } from './shared/ToastProvider.jsx'
 import './index.css'
 
 const queryClient = new QueryClient()
@@ -28,10 +36,14 @@ const wagmiConfig = createConfig({
 })
 
 const appChainId = CHAIN_ID
-const nativeDenom = (import.meta.env.VITE_NATIVE_DENOM || 'GAS').trim()
-const nativeSymbol = (import.meta.env.VITE_NATIVE_SYMBOL || nativeDenom).trim()
-const nativeName = (import.meta.env.VITE_NATIVE_NAME || nativeSymbol).trim()
-const missingPublicEnvKeys = MISSING_PUBLIC_ENV_KEYS
+const nativeDenom = NATIVE_DENOM
+const nativeSymbol = NATIVE_SYMBOL
+const nativeName = NATIVE_NAME
+const fixedMinGasPrice = FIXED_MIN_GAS_PRICE || (appChainId === 'creato3-1' ? 0 : 150000)
+const lowGasPrice = LOW_GAS_PRICE || fixedMinGasPrice
+const averageGasPrice = AVERAGE_GAS_PRICE || lowGasPrice
+const highGasPrice = HIGH_GAS_PRICE || averageGasPrice
+const hasDeploymentEnvIssues = HAS_DEPLOYMENT_ENV_ISSUES
 
 const customChain = {
   chain_id: appChainId,
@@ -47,10 +59,10 @@ const customChain = {
     fee_tokens: [
       {
         denom: nativeDenom,
-        fixed_min_gas_price: 0,
-        low_gas_price: 0,
-        average_gas_price: 0,
-        high_gas_price: 0
+        fixed_min_gas_price: fixedMinGasPrice,
+        low_gas_price: lowGasPrice,
+        average_gas_price: averageGasPrice,
+        high_gas_price: highGasPrice
       }
     ]
   },
@@ -61,82 +73,10 @@ const customChain = {
 
 injectStyles(InterwovenKitStyles)
 
-class StartupErrorBoundary extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { error: null }
-  }
-
-  static getDerivedStateFromError(error) {
-    return { error }
-  }
-
-  render() {
-    if (this.state.error) {
-      return <DeploymentIssueScreen error={this.state.error} />
-    }
-
-    return this.props.children
-  }
-}
-
-function DeploymentIssueScreen({ error = null }) {
-  const title = missingPublicEnvKeys.length
-    ? 'Creato3 is missing Vercel environment variables'
-    : 'Creato3 failed during startup'
-
-  const description = missingPublicEnvKeys.length
-    ? 'Add the missing public chain endpoints in Vercel, then redeploy.'
-    : 'Open the browser console or Vercel function logs to inspect the runtime error.'
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#fafbfc] px-6 py-16 text-[#1f2937] dark:from-[#1a1a2e] dark:to-[#16213e] dark:text-white">
-      <div className="mx-auto max-w-3xl rounded-[2rem] border border-[rgba(0,0,0,0.08)] bg-white/90 p-8 shadow-2xl backdrop-blur dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]/90">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#6ee7b7]">
-          Deployment Check
-        </p>
-        <h1 className="mb-4 text-4xl">{title}</h1>
-        <p className="mb-6 text-base text-[#6b7280] dark:text-[#9ca3af]">{description}</p>
-
-        {missingPublicEnvKeys.length ? (
-          <>
-            <div className="mb-6 rounded-3xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-400/20 dark:bg-amber-500/10">
-              <p className="font-medium text-amber-900 dark:text-amber-200">
-                Missing variables
-              </p>
-              <ul className="mt-3 space-y-2 font-mono text-sm text-amber-800 dark:text-amber-100">
-                {missingPublicEnvKeys.map((key) => (
-                  <li key={key}>{key}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-3xl bg-[#0f172a] p-5 font-mono text-sm text-slate-100">
-              <p>VITE_EVM_RPC=https://your-public-evm-rpc.example.com</p>
-              <p>VITE_COSMOS_RPC=https://your-public-cosmos-rpc.example.com</p>
-              <p>VITE_REST_API=https://your-public-rest-api.example.com</p>
-              <p>VITE_INDEXER_URL=https://your-public-indexer.example.com</p>
-            </div>
-          </>
-        ) : null}
-
-        {error ? (
-          <div className="mt-6 rounded-3xl border border-rose-200 bg-rose-50 p-5 dark:border-rose-400/20 dark:bg-rose-500/10">
-            <p className="font-medium text-rose-900 dark:text-rose-200">Runtime error</p>
-            <p className="mt-2 font-mono text-sm text-rose-800 dark:text-rose-100">
-              {error.message || 'Unknown startup error'}
-            </p>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  )
-}
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <StartupErrorBoundary>
-      {missingPublicEnvKeys.length ? (
+      {hasDeploymentEnvIssues ? (
         <DeploymentIssueScreen />
       ) : (
         <WagmiProvider config={wagmiConfig}>
@@ -147,7 +87,6 @@ createRoot(document.getElementById('root')).render(
                   {...TESTNET}
                   defaultChainId={appChainId}
                   customChain={customChain}
-                  enableAutoSign
                 >
                   <App />
                 </InterwovenKitProvider>

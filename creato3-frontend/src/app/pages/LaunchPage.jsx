@@ -5,19 +5,21 @@ import { ethers } from 'ethers'
 import { useInterwovenKit, useInitiaAddress } from '@initia/interwovenkit-react'
 import CREATOR_PROFILE_ABI from '../../abis/CreatorProfile.json'
 import { getSmartPricing } from '../../api/creatorAI'
-import { useToast } from '../../components/ToastProvider'
+import { useToast } from '../../shared/toast'
 import { CHAIN_ID, CONTRACTS } from '../../config/contracts'
 import { publicClient } from '../../config/evmClient'
 import { executeWithAccountBootstrap } from '../../utils/accountBootstrap'
 import { buildMsgCall } from '../../utils/msgCall'
 import { getSubscriptionConfig, saveSubscriptionConfig } from '../../utils/subscriptionStore'
+import { extractTxHash, getTxExplorerUrl } from '../../utils/txProof'
 import {
   DollarSignIcon,
   GlobeIcon,
   LinkIcon,
   MessageCircleIcon,
   SparklesIcon,
-  UploadIcon
+  UploadIcon,
+  XIcon
 } from '../components/icons'
 
 const fileToUpload = async (file) => {
@@ -65,10 +67,12 @@ export function LaunchPage() {
   const [discord, setDiscord] = useState('')
   const [website, setWebsite] = useState('')
   const [manualPrice, setManualPrice] = useState('')
+  const [pitch, setPitch] = useState('')
   const [showAiSuggestion, setShowAiSuggestion] = useState(false)
   const [aiSuggestion, setAiSuggestion] = useState(null)
   const [pricingBusy, setPricingBusy] = useState(false)
   const [launching, setLaunching] = useState(false)
+  const [launchTxHash, setLaunchTxHash] = useState('')
 
   useEffect(() => {
     if (!evmAddress || !CONTRACTS.profile) return
@@ -117,6 +121,7 @@ export function LaunchPage() {
           setDiscord(stored.links?.discord || '')
           setWebsite(stored.links?.website || '')
           setManualPrice(String(stored.price || ''))
+          setPitch(String(stored.pitch || ''))
           setAiSuggestion(stored.suggestion || null)
           setShowAiSuggestion(Boolean(stored.suggestion))
         } else if (tierList?.length) {
@@ -145,6 +150,41 @@ export function LaunchPage() {
     event.target.value = ''
   }
 
+  const handleRemoveFile = (id) => {
+    setFiles((prev) => prev.filter((file) => file.id !== id))
+  }
+
+  const buildContentSummary = () => {
+    const parts = []
+    if (creator?.displayName) {
+      parts.push(`On-chain display name: ${creator.displayName}`)
+    }
+    if (creator?.bio) {
+      parts.push(`Bio: ${creator.bio}`)
+    }
+    if (creator?.category) {
+      parts.push(`Category: ${creator.category}`)
+    }
+    if (files.length) {
+      const fileLine = files
+        .map((f) => `${f.name} (${f.category}, ${(f.size / 1024 / 1024).toFixed(2)} MB)`)
+        .join('; ')
+      parts.push(`Premium uploads (${files.length}): ${fileLine}`)
+    }
+    if (pitch.trim()) {
+      parts.push(`Creator pitch / what subscribers get: ${pitch.trim()}`)
+    }
+    return parts.join('\n') || 'No uploads or pitch yet — using profile + audience only.'
+  }
+
+  const sourceLabel = (src) => {
+    if (src === 'groq') return 'Groq (server)'
+    if (src === 'mock') return 'Demo rules (add GROQ_API_KEY on server for LLM)'
+    if (src === 'local') return 'Built-in heuristic (set VITE_BACKEND_URL for API + Groq)'
+    if (src === 'cloud') return 'Claude / LM Studio'
+    return src || 'AI'
+  }
+
   const handleGetAiPricing = async () => {
     if (!expectedSubs) {
       toast.error('Audience required', 'Add your expected subscribers before asking for AI pricing.')
@@ -157,26 +197,39 @@ export function LaunchPage() {
       const data = await getSmartPricing({
         niche: creator?.category || 'creator',
         subscribers: Number(expectedSubs),
-        platform: 'Creato3'
+        platform: 'Creato3',
+        contentSummary: buildContentSummary(),
+        displayName: creator?.displayName || '',
+        bio: creator?.bio || ''
       })
 
       const options = data?.tiers || []
-      const low = options[0]?.price_usd || 5
-      const middle = options[1]?.price_usd || low
-      const high = options[2]?.price_usd || middle
+      const init = (t) => {
+        const v = Number(t?.priceInit ?? t?.price ?? 0)
+        return Number.isFinite(v) ? v : 0
+      }
+      const low = options[0] ? init(options[0]) : 2
+      const middle = options[1] ? init(options[1]) : options[0] ? init(options[0]) : low
+      const high = options[2] ? init(options[2]) : middle
       const confidenceBase = Number(data?.expected_conversion_pct || 3.5)
 
+      const fmt = (n) => (Number.isFinite(n) ? String(n) : '0')
+
       const suggestion = {
-        price: String(middle),
-        range: `${low} - ${high} INIT`,
-        confidence: `${Math.min(99, 80 + Math.round(confidenceBase * 4))}%`
+        price: fmt(middle),
+        range: `${fmt(low)} – ${fmt(high)} INIT`,
+        confidence: `${Math.min(99, 72 + Math.round(confidenceBase * 3))}%`,
+        reasoning: data?.reasoning || '',
+        tiers: options,
+        sourceLabel: sourceLabel(data?.source),
+        comparisonNote: data?.comparison?.creato3_value_note || ''
       }
 
       setAiSuggestion(suggestion)
       setShowAiSuggestion(true)
 
       if (!manualPrice) {
-        setManualPrice(String(middle))
+        setManualPrice(fmt(middle))
       }
     } catch (error) {
       toast.error('AI pricing failed', error?.message || 'Please try again.')
@@ -223,6 +276,7 @@ export function LaunchPage() {
           discord,
           website
         },
+        pitch: pitch.trim(),
         price: finalPrice,
         suggestion: aiSuggestion
       }
@@ -248,11 +302,13 @@ export function LaunchPage() {
           input: data
         })
 
-        await executeWithAccountBootstrap({
+        const result = await executeWithAccountBootstrap({
+          actionLabel: 'launch your subscription',
           initiaAddress: resolvedInitiaAddress,
           toast,
           execute: () => requestTxSync({ chainId: CHAIN_ID, messages: [msg] })
         })
+        setLaunchTxHash(extractTxHash(result))
       } else {
         const data = iface.encodeFunctionData('createTier', [
           priceWei,
@@ -266,15 +322,16 @@ export function LaunchPage() {
           input: data
         })
 
-        await executeWithAccountBootstrap({
+        const result = await executeWithAccountBootstrap({
+          actionLabel: 'launch your subscription',
           initiaAddress: resolvedInitiaAddress,
           toast,
           execute: () => requestTxSync({ chainId: CHAIN_ID, messages: [msg] })
         })
+        setLaunchTxHash(extractTxHash(result))
       }
 
       toast.success('Subscription launched', 'Your creator page is now ready for subscribers.')
-      navigate(`/creator/${evmAddress}`)
     } catch (error) {
       toast.error('Launch failed', error?.message || 'Please try again.')
     } finally {
@@ -290,6 +347,28 @@ export function LaunchPage() {
           <p className="text-lg text-[#6b7280] dark:text-[#9ca3af]">
             Set up your monetization in minutes
           </p>
+        </div>
+
+        <div className="mb-8 rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-6 shadow-lg dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-[#6b7280] dark:text-[#9ca3af]">
+                Demo flow
+              </p>
+              <h2 className="dark:text-white">Show judges exactly what is verifiable</h2>
+              <p className="mt-2 max-w-2xl text-sm text-[#6b7280] dark:text-[#9ca3af]">
+                1. Create profile on-chain. 2. Run AI pricing. 3. Launch a paid tier. 4. Open the
+                creator page. 5. Subscribe from a second wallet and show the transaction hash.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/architecture')}
+              className="rounded-full border border-[rgba(0,0,0,0.08)] px-5 py-3 text-sm transition-colors hover:bg-[#f3f4f6] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#1a1a2e]"
+              type="button"
+            >
+              Open architecture story
+            </button>
+          </div>
         </div>
 
         {!registered ? (
@@ -336,7 +415,20 @@ export function LaunchPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#93c5fd]/20 to-[#bfdbfe]/20 text-lg">
                       {file.category === 'image' ? '🖼️' : file.category === 'video' ? '🎬' : '📄'}
                     </div>
-                    <span className="flex-1 dark:text-white">{file.name}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate dark:text-white">{file.name}</p>
+                      <p className="text-sm text-[#6b7280] dark:text-[#9ca3af]">
+                        {file.category.toUpperCase()} · {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                    <button
+                      aria-label={`Remove ${file.name}`}
+                      className="rounded-full border border-[rgba(0,0,0,0.08)] p-2 text-[#6b7280] transition-colors hover:border-[#f87171] hover:bg-[#fee2e2] hover:text-[#dc2626] dark:border-[rgba(255,255,255,0.1)] dark:text-[#9ca3af] dark:hover:border-[#f87171]/60 dark:hover:bg-[#3b1f28] dark:hover:text-[#fca5a5]"
+                      onClick={() => handleRemoveFile(file.id)}
+                      type="button"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -416,17 +508,43 @@ export function LaunchPage() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-8 shadow-lg dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]">
+          <div
+            id="ai-pricing"
+            className="scroll-mt-24 rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-8 shadow-lg dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]"
+          >
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#fbcfe8]/20 to-[#ddd6fe]/20">
                 <SparklesIcon className="h-6 w-6 text-[#ddd6fe]" />
               </div>
-              <h2 className="dark:text-white">AI Pricing Suggestion</h2>
+              <div>
+                <h2 className="dark:text-white">AI pricing agent</h2>
+                <p className="text-sm text-[#6b7280] dark:text-[#9ca3af]">
+                  Analyzes your profile, uploads, and pitch; suggests INIT/month (chain currency).
+                </p>
+              </div>
             </div>
 
-            <p className="mb-6 text-[#6b7280] dark:text-[#9ca3af]">
-              Get intelligent pricing recommendations based on your content and market data
+            <p className="mb-4 text-[#6b7280] dark:text-[#9ca3af]">
+              Uses your <strong className="text-[#374151] dark:text-[#e5e7eb]">Creato3 API</strong> when{' '}
+              <code className="rounded bg-black/5 px-1.5 py-0.5 text-xs dark:bg-white/10">
+                VITE_BACKEND_URL
+              </code>{' '}
+              is set (Groq on the server). Otherwise uses a smart local heuristic — not random USD
+              mislabeled as INIT.
             </p>
+
+            <div className="mb-6">
+              <label className="mb-2 block dark:text-white">
+                What subscribers get (optional — improves analysis)
+              </label>
+              <textarea
+                value={pitch}
+                onChange={(e) => setPitch(e.target.value)}
+                placeholder="e.g. Weekly 4K tutorials, source files, monthly live Q&A, private Discord…"
+                rows={3}
+                className="w-full resize-y rounded-2xl border border-[rgba(0,0,0,0.08)] bg-[#f9fafb] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#93c5fd] dark:border-[rgba(255,255,255,0.1)] dark:bg-[#1a1a2e] dark:text-white"
+              />
+            </div>
 
             <button
               onClick={handleGetAiPricing}
@@ -435,7 +553,7 @@ export function LaunchPage() {
               type="button"
             >
               <SparklesIcon className="h-5 w-5" />
-              {pricingBusy ? 'Thinking...' : 'Get AI Pricing Suggestion'}
+              {pricingBusy ? 'Analyzing…' : 'Run AI pricing'}
             </button>
 
             <AnimatePresence>
@@ -444,34 +562,76 @@ export function LaunchPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="mt-6 rounded-2xl border border-[rgba(0,0,0,0.08)] bg-gradient-to-r from-[#a7f3d0]/10 to-[#93c5fd]/10 p-6 dark:border-[rgba(255,255,255,0.1)]"
+                  className="mt-6 space-y-4 rounded-2xl border border-[rgba(0,0,0,0.08)] bg-gradient-to-r from-[#a7f3d0]/10 to-[#93c5fd]/10 p-6 dark:border-[rgba(255,255,255,0.1)]"
                 >
-                  <div className="mb-4 flex items-center gap-2">
-                    <SparklesIcon className="h-5 w-5 text-[#6ee7b7]" />
-                    <h3 className="dark:text-white">AI Recommendation</h3>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <SparklesIcon className="h-5 w-5 text-[#6ee7b7]" />
+                      <h3 className="dark:text-white">Recommendation</h3>
+                    </div>
+                    <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-[#4b5563] dark:bg-white/10 dark:text-[#d1d5db]">
+                      {aiSuggestion.sourceLabel}
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div>
                       <p className="mb-1 text-sm text-[#6b7280] dark:text-[#9ca3af]">
-                        Suggested Price
+                        Suggested (mid tier)
                       </p>
                       <p className="text-2xl dark:text-white">{aiSuggestion.price} INIT</p>
-                      <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">per month</p>
+                      <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">per month on-chain</p>
                     </div>
                     <div>
-                      <p className="mb-1 text-sm text-[#6b7280] dark:text-[#9ca3af]">
-                        Market Range
-                      </p>
-                      <p className="text-2xl dark:text-white">{aiSuggestion.range}</p>
-                      <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">similar creators</p>
+                      <p className="mb-1 text-sm text-[#6b7280] dark:text-[#9ca3af]">INIT range</p>
+                      <p className="text-xl dark:text-white">{aiSuggestion.range}</p>
+                      <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">low → high tier</p>
                     </div>
                     <div>
                       <p className="mb-1 text-sm text-[#6b7280] dark:text-[#9ca3af]">Confidence</p>
                       <p className="text-2xl text-[#6ee7b7]">{aiSuggestion.confidence}</p>
-                      <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">accuracy</p>
+                      <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">model estimate</p>
                     </div>
                   </div>
+
+                  {aiSuggestion.reasoning ? (
+                    <div className="rounded-xl border border-[rgba(0,0,0,0.06)] bg-white/60 p-4 text-sm leading-relaxed text-[#374151] dark:border-[rgba(255,255,255,0.08)] dark:bg-[#1a1a2e]/80 dark:text-[#d1d5db]">
+                      <p className="mb-1 font-semibold text-[#111827] dark:text-white">Why these numbers</p>
+                      <p>{aiSuggestion.reasoning}</p>
+                    </div>
+                  ) : null}
+
+                  {aiSuggestion.comparisonNote ? (
+                    <p className="text-xs text-[#6b7280] dark:text-[#9ca3af]">
+                      {aiSuggestion.comparisonNote}
+                    </p>
+                  ) : null}
+
+                  {Array.isArray(aiSuggestion.tiers) && aiSuggestion.tiers.length > 0 ? (
+                    <div>
+                      <p className="mb-2 text-sm font-medium text-[#374151] dark:text-[#e5e7eb]">
+                        Tier breakdown (INIT / month)
+                      </p>
+                      <ul className="space-y-2">
+                        {aiSuggestion.tiers.map((t, i) => (
+                          <li
+                            key={`${t.name}-${i}`}
+                            className="flex flex-wrap items-baseline justify-between gap-2 rounded-xl bg-white/50 px-3 py-2 text-sm dark:bg-[#1a1a2e]/60"
+                          >
+                            <span className="font-medium dark:text-white">{t.name}</span>
+                            <span className="text-[#059669] dark:text-[#6ee7b7]">
+                              {Number(t.priceInit ?? t.price ?? 0)} INIT
+                            </span>
+                            {t.description ? (
+                              <span className="w-full text-xs text-[#6b7280] dark:text-[#9ca3af]">
+                                {t.description}
+                              </span>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </Motion.div>
               ) : null}
             </AnimatePresence>
@@ -513,6 +673,45 @@ export function LaunchPage() {
           >
             {launching ? 'Launching...' : 'Launch Subscription'}
           </button>
+
+          {launchTxHash ? (
+            <div className="rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white p-6 shadow-lg dark:border-[rgba(255,255,255,0.1)] dark:bg-[#2a2a3e]">
+              <h3 className="mb-2 dark:text-white">Launch verified on-chain</h3>
+              <p className="mb-3 text-sm text-[#6b7280] dark:text-[#9ca3af]">
+                Keep this transaction hash in your demo or README so anyone can verify that the tier
+                was created or updated on Initia.
+              </p>
+              <code className="block overflow-hidden text-ellipsis whitespace-nowrap rounded-xl bg-[#f9fafb] px-4 py-3 text-sm dark:bg-[#111827] dark:text-[#d1d5db]">
+                {launchTxHash}
+              </code>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  onClick={() => navigator.clipboard.writeText(launchTxHash)}
+                  className="rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[#eef2ff] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#312e81]"
+                  type="button"
+                >
+                  Copy hash
+                </button>
+                {getTxExplorerUrl(launchTxHash) ? (
+                  <a
+                    href={getTxExplorerUrl(launchTxHash)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[#ecfeff] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#164e63]"
+                  >
+                    Verify on Initia
+                  </a>
+                ) : null}
+                <button
+                  onClick={() => navigate(`/creator/${evmAddress}`)}
+                  className="rounded-full bg-gradient-to-r from-[#a7f3d0] to-[#93c5fd] px-4 py-2 text-sm shadow-md transition-transform hover:scale-105 active:scale-95"
+                  type="button"
+                >
+                  Open creator page
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

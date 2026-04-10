@@ -4,11 +4,12 @@ import { ethers } from 'ethers'
 import { motion as Motion } from 'framer-motion'
 import { useInterwovenKit, useInitiaAddress } from '@initia/interwovenkit-react'
 import SUBSCRIPTION_ABI from '../../abis/SubscriptionManager.json'
-import { useToast } from '../../components/ToastProvider'
+import { useToast } from '../../shared/toast'
 import { CHAIN_ID, CONTRACTS } from '../../config/contracts'
 import { publicClient } from '../../config/evmClient'
 import { executeWithAccountBootstrap } from '../../utils/accountBootstrap'
 import { buildMsgCall } from '../../utils/msgCall'
+import { extractTxHash, getTxExplorerUrl } from '../../utils/txProof'
 import {
   CheckIcon,
   CreditCardIcon,
@@ -41,6 +42,7 @@ export function SubscribePage() {
   const [selectedToken, setSelectedToken] = useState('INIT')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [txHash, setTxHash] = useState('')
   const [balance, setBalance] = useState(null)
 
   const priceWei = useMemo(() => {
@@ -53,16 +55,6 @@ export function SubscribePage() {
 
   const currentPriceLabel = creator.priceLabel || `${creator.price || '0'} INIT`
   const hasEnough = selectedToken === 'INIT' && balance !== null && BigInt(balance) >= priceWei
-
-  useEffect(() => {
-    if (!isSuccess || !creator.id) return undefined
-
-    const timer = window.setTimeout(() => {
-      navigate(`/creator/${creator.id}`)
-    }, 2000)
-
-    return () => window.clearTimeout(timer)
-  }, [creator.id, isSuccess, navigate])
 
   useEffect(() => {
     const address = hexAddress || location.state?.viewerAddress
@@ -132,12 +124,14 @@ export function SubscribePage() {
         value: priceWei.toString()
       })
 
-      await executeWithAccountBootstrap({
+      const result = await executeWithAccountBootstrap({
+        actionLabel: 'complete your subscription',
         initiaAddress: resolvedInitiaAddress,
         toast,
         execute: () => requestTxSync({ chainId: CHAIN_ID, messages: [msg] })
       })
 
+      setTxHash(extractTxHash(result))
       toast.success(
         shouldRenew ? 'Subscription renewed' : 'Subscription successful',
         `You're now subscribed to ${creator.username}.`
@@ -163,8 +157,52 @@ export function SubscribePage() {
           </div>
           <h2 className="mb-4 dark:text-white">Subscription Successful!</h2>
           <p className="text-[#6b7280] dark:text-[#9ca3af]">
-            You&apos;re now subscribed to {creator.username}. Redirecting...
+            You&apos;re now subscribed to {creator.username}. Keep this hash in your demo so judges can
+            verify the payment.
           </p>
+          {txHash ? (
+            <div className="mt-6 rounded-2xl bg-[#f9fafb] p-5 text-left dark:bg-[#1a1a2e]">
+              <p className="mb-2 text-sm font-medium dark:text-white">Subscription tx hash</p>
+              <code className="block overflow-hidden text-ellipsis whitespace-nowrap rounded-xl bg-white px-4 py-3 text-sm dark:bg-[#111827] dark:text-[#d1d5db]">
+                {txHash}
+              </code>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <button
+                  onClick={() => navigator.clipboard.writeText(txHash)}
+                  className="rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[#eef2ff] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#312e81]"
+                  type="button"
+                >
+                  Copy hash
+                </button>
+                {getTxExplorerUrl(txHash) ? (
+                  <a
+                    href={getTxExplorerUrl(txHash)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[#ecfeff] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#164e63]"
+                  >
+                    Verify on Initia
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => navigate(`/creator/${creator.id}`)}
+              className="rounded-full bg-gradient-to-r from-[#a7f3d0] to-[#93c5fd] px-6 py-3 shadow-lg transition-transform hover:scale-105 active:scale-95"
+              type="button"
+            >
+              Go to creator page
+            </button>
+            <button
+              onClick={() => navigate('/subscriptions')}
+              className="rounded-full border border-[rgba(0,0,0,0.08)] px-6 py-3 transition-colors hover:bg-[#f3f4f6] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#1a1a2e]"
+              type="button"
+            >
+              View my subscriptions
+            </button>
+          </div>
         </Motion.div>
       </div>
     )

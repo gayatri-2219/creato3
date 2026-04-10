@@ -4,6 +4,17 @@
 .vscode/
 *.swp
 
+# General local artifacts
+node_modules/
+dist/
+dist-ssr/
+.vercel/
+.env
+.env.*
+!.env.example
+!.env.vercel.example
+.env.local
+
 # Logs
 *.log
 logs/
@@ -26,12 +37,37 @@ creato3-frontend/node_modules/
 creato3-frontend/dist/
 creato3-frontend/dist-ssr/
 creato3-frontend/.env
+creato3-frontend/.env.*
+!creato3-frontend/.env.example
+!creato3-frontend/.env.vercel.example
 creato3-frontend/.env.local
 creato3-frontend/*.local
+
+# Backend artifacts and secrets
+backend/node_modules/
+backend/.env
+backend/.env.*
+!backend/.env.example
+backend/.env.local
+backend/*.local
+
+# Tooling package artifacts and secrets
+agents/node_modules/
+agents/.env
+agents/.env.*
+!agents/.env.example
+agents/.env.local
+mcp-server/node_modules/
+mcp-server/.env
+mcp-server/.env.*
+!mcp-server/.env.example
+mcp-server/.env.local
 
 # Contracts artifacts and secrets
 creato3/cache/
 creato3/out/
 creato3/.env
+creato3/.env.*
+!creato3/.env.example
 creato3/broadcast/*/31337/
 creato3/broadcast/**/dry-run/

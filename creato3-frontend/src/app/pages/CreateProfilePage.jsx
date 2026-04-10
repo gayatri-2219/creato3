@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { ethers } from 'ethers'
 import { useInterwovenKit, useInitiaAddress } from '@initia/interwovenkit-react'
 import CREATOR_PROFILE_ABI from '../../abis/CreatorProfile.json'
-import { useToast } from '../../components/ToastProvider'
+import { useToast } from '../../shared/toast'
 import { CHAIN_ID, CONTRACTS } from '../../config/contracts'
 import { publicClient } from '../../config/evmClient'
 import { executeWithAccountBootstrap } from '../../utils/accountBootstrap'
 import { buildMsgCall } from '../../utils/msgCall'
+import { extractTxHash, getTxExplorerUrl, shortTxHash } from '../../utils/txProof'
 import { getUsernameOverride, setUsernameOverride } from '../../utils/usernameStore'
 import { categoryOptions, displayNameFromHandle, normalizeInitName } from '../lib/formatters'
 import { CheckIcon, UserCircleIcon, WalletIcon } from '../components/icons'
@@ -37,6 +38,7 @@ export function CreateProfilePage() {
 
   const [currentStep, setCurrentStep] = useState('wallet')
   const [registered, setRegistered] = useState(false)
+  const [txHash, setTxHash] = useState('')
   const [checking, setChecking] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState({
@@ -171,15 +173,16 @@ export function CreateProfilePage() {
         input: data
       })
 
-      await executeWithAccountBootstrap({
+      const result = await executeWithAccountBootstrap({
+        actionLabel: 'create your profile',
         initiaAddress: resolvedInitiaAddress,
         toast,
         execute: () => requestTxSync({ chainId: CHAIN_ID, messages: [msg] })
       })
 
+      setTxHash(extractTxHash(result))
       setRegistered(true)
       toast.success('Profile created', 'Your creator profile is now live.')
-      navigate('/launch')
     } catch (error) {
       toast.error('Registration failed', error?.message || 'Please try again.')
     } finally {
@@ -260,12 +263,46 @@ export function CreateProfilePage() {
                 Your creator identity is already on-chain. Continue to the launch page to publish
                 your subscription offer.
               </p>
+              {txHash ? (
+                <div className="mx-auto max-w-lg rounded-2xl bg-[#f9fafb] p-5 text-left dark:bg-[#1a1a2e]">
+                  <p className="mb-2 text-sm font-medium dark:text-white">Verification proof</p>
+                  <p className="mb-2 text-sm text-[#6b7280] dark:text-[#9ca3af]">
+                    Profile creation transaction hash
+                  </p>
+                  <code className="block overflow-hidden text-ellipsis whitespace-nowrap rounded-xl bg-white px-4 py-3 text-sm dark:bg-[#111827] dark:text-[#d1d5db]">
+                    {txHash}
+                  </code>
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    <button
+                      onClick={() => navigator.clipboard.writeText(txHash)}
+                      className="rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[#eef2ff] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#312e81]"
+                      type="button"
+                    >
+                      Copy hash
+                    </button>
+                    {getTxExplorerUrl(txHash) ? (
+                      <a
+                        href={getTxExplorerUrl(txHash)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-full border border-[rgba(0,0,0,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[#ecfeff] dark:border-[rgba(255,255,255,0.1)] dark:text-white dark:hover:bg-[#164e63]"
+                      >
+                        Verify on Initia
+                      </a>
+                    ) : (
+                      <span className="rounded-full bg-[#eef2ff] px-4 py-2 text-sm text-[#4338ca] dark:bg-[#312e81]/40 dark:text-[#c7d2fe]">
+                        Explorer link appears on public testnet deploys
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : null}
               <button
                 onClick={() => navigate('/launch')}
                 className="rounded-full bg-gradient-to-r from-[#a7f3d0] to-[#93c5fd] px-8 py-4 shadow-lg transition-transform hover:scale-105 active:scale-95"
                 type="button"
               >
-                Continue to Launch
+                Continue to Launch {txHash ? `(${shortTxHash(txHash)})` : ''}
               </button>
             </div>
           ) : null}

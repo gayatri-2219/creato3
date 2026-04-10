@@ -727,7 +727,7 @@ const customChain = {
     indexer: [{ address: 'http://localhost:8080' }],
   },
   fees: { fee_tokens: [{ denom: 'umin', fixed_min_gas_price: 0,
-    low_gas_price: 0, average_gas_price: 0, high_gas_price: 0 }] },
+    low_gas_price: 0, average_gas_price: 0, high_gas_price: 0 }] }, // local-only example; public chains need a non-zero gas price
   staking: { staking_tokens: [{ denom: 'umin' }] },
   native_assets: [{ denom: 'umin', name: 'Min', symbol: 'MIN', decimals: 6 }],
   metadata: { is_l1: false, minitia: { type: 'minievmchain' } }, // EVM type
@@ -986,7 +986,7 @@ weave relayer log | tail -5           # recent activity</div>
   "vm": "evm",
   "native_feature": "auto-signing",
   "core_logic_path": "creato3/src/SubscriptionManager.sol",
-  "native_feature_frontend_path": "creato3-frontend/src/components/SubscribeFlow.jsx",
+  "native_feature_frontend_path": "creato3-frontend/src/app/pages/SubscribePage.jsx",
   "demo_video_url": "https://youtu.be/YOUR_VIDEO_ID"
 }</div>
 <div class="table-wrap">

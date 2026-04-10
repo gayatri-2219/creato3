@@ -1,0 +1,20 @@
+{
+  "name": "creato3-my-initia-project",
+  "private": true,
+  "description": "Creato3 on Initia — use dev:backend + dev:frontend in two terminals (MongoDB required).",
+  "scripts": {
+    "install:all": "npm install --prefix ./backend && npm install --prefix ./creato3-frontend && npm install --prefix ./agents && npm install --prefix ./mcp-server",
+    "dev:backend": "npm run dev --prefix ./backend",
+    "dev:backend:simple": "npm run dev:simple --prefix ./backend",
+    "dev:frontend": "npm run dev --prefix ./creato3-frontend",
+    "start:backend": "npm start --prefix ./backend",
+    "build:frontend": "npm run build --prefix ./creato3-frontend",
+    "preview:frontend": "npm run preview --prefix ./creato3-frontend",
+    "agent:creator": "npm run creator --prefix ./agents --",
+    "agent:content": "npm run content --prefix ./agents --",
+    "mcp": "npm start --prefix ./mcp-server"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

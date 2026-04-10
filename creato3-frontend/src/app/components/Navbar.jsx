@@ -1,12 +1,15 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useInterwovenKit } from '@initia/interwovenkit-react'
 import { getUsernameOverride } from '../../utils/usernameStore'
-import { useTheme } from '../../components/ThemeProvider'
+import { useTheme } from '../../shared/theme'
 import { Logo } from './Logo'
 import { MoonIcon, SunIcon, WalletIcon } from './icons'
 
 const navLinks = [
   { label: 'Discover', to: '/discover' },
+  { label: 'Agents', to: '/agents' },
+  { label: 'Profile', to: '/profile' },
+  { label: 'Subscriptions', to: '/subscriptions' },
   { label: 'Create', to: '/create-profile' },
   { label: 'Launch', to: '/launch' }
 ]

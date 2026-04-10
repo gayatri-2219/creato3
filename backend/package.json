@@ -1,0 +1,24 @@
+{
+  "name": "creato3-backend",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "dev:simple": "node server.js"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.13.5",
+    "express": "^5.1.0",
+    "groq-sdk": "^0.12.0",
+    "mongoose": "^8.19.2",
+    "twitter-api-v2": "^1.18.2"
+  }
+}

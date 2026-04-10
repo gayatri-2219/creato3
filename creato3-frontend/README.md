@@ -14,53 +14,41 @@ npm install
 npm run dev
 ```
 
+Use [`.env.example`](./.env.example) as the local reference for the bundled local Initia stack.
+
 ## Vercel envs for the current Creato3 chain
+
+Use [`.env.vercel.example`](./.env.vercel.example) as the copy-paste checklist when filling Vercel Project Settings -> Environment Variables.
 
 Use these exact chain-specific values in Vercel for the deployment this repo is currently wired to:
 
 ```env
-VITE_PROFILE_CONTRACT=0xc3a2dd5085c2E74FE0A3e3Ce6e10d72581888de9
-VITE_SUBSCRIPTION_CONTRACT=0xb459aF522fDae51FCf7654Adc0B00E97F74CfFdF
-VITE_TREASURY_CONTRACT=0x23B115b2cc1a31E959446034890B5dA9c75A7e28
-VITE_CHAIN_ID=creato3-1
-VITE_NATIVE_DENOM=GAS
+VITE_PROFILE_CONTRACT=0x109544311B0A7a6E75a22d07E1137FeF9eC4c4F9
+VITE_SUBSCRIPTION_CONTRACT=0x9776152A4d9A7f0e04db5F6e4ED0f0001dEddF87
+VITE_TREASURY_CONTRACT=0x398442C384949b7b8E2F3F5332B5b76672b841De
+VITE_CHAIN_ID=evm-1
+VITE_EVM_RPC=https://jsonrpc-evm-1.anvil.asia-southeast.initia.xyz
+VITE_COSMOS_RPC=https://rpc-evm-1.anvil.asia-southeast.initia.xyz
+VITE_REST_API=https://rest-evm-1.anvil.asia-southeast.initia.xyz
+VITE_INDEXER_URL=https://rollytics-api-evm-1.anvil.asia-southeast.initia.xyz
+VITE_NATIVE_DENOM=evm/2eE7007DF876084d4C74685e90bB7f4cd7c86e22
 VITE_NATIVE_SYMBOL=GAS
-VITE_NATIVE_NAME=GAS
-VITE_AI_MODE=claude
-VITE_ANTHROPIC_API_URL=/api/claude
+VITE_NATIVE_NAME=Gas Token
+VITE_GAS_PRICE=150000
+VITE_AI_MODE=local
 VITE_BOOTSTRAP_API_URL=/api/account/bootstrap
+VITE_BACKEND_URL=https://your-backend.example.com
 
 BOOTSTRAP_ENABLED=true
-BOOTSTRAP_PROVIDER=mnemonic
-BOOTSTRAP_CHAIN_ID=creato3-1
-BOOTSTRAP_ADDRESS_PREFIX=init
-BOOTSTRAP_AMOUNT=auto
-BOOTSTRAP_FEE_DENOM=GAS
-```
-
-You still need to supply the public network endpoints for that same chain before Vercel can actually work:
-
-```env
-VITE_EVM_RPC=https://your-public-evm-rpc.example.com
-VITE_COSMOS_RPC=https://your-public-cosmos-rpc.example.com
-VITE_REST_API=https://your-public-rest-api.example.com
-VITE_INDEXER_URL=https://your-public-indexer.example.com
+BOOTSTRAP_PROVIDER=evm_private_key
+BOOTSTRAP_CHAIN_ID=evm-1
 BOOTSTRAP_COSMOS_RPC=https://your-public-cosmos-rpc.example.com
-```
-
-You also need the production secrets:
-
-```env
-ANTHROPIC_API_KEY=...
-GAS_STATION_MNEMONIC=...
-```
-
-If you do not want the Vercel function to hold a mnemonic, switch bootstrap to a remote sponsor service instead:
-
-```env
-BOOTSTRAP_PROVIDER=remote
-BOOTSTRAP_SPONSOR_API_URL=https://your-sponsor-backend.example.com/api/bootstrap
-BOOTSTRAP_SPONSOR_API_TOKEN=...
+BOOTSTRAP_EVM_RPC=https://jsonrpc-evm-1.anvil.asia-southeast.initia.xyz
+BOOTSTRAP_FEE_DENOM=evm/2eE7007DF876084d4C74685e90bB7f4cd7c86e22
+BOOTSTRAP_FEE_TOKEN_ADDRESS=0x2eE7007DF876084d4C74685e90bB7f4cd7c86e22
+BOOTSTRAP_EVM_AMOUNT_WEI=1000000000000000
+BOOTSTRAP_EVM_PRIVATE_KEY=0xYOUR_FUNDED_EVM_PRIVATE_KEY
+AGENT_BOOTSTRAP_EVM_AMOUNT_WEI=1000000000000000
 ```
 
 Recommended Vercel project settings:
@@ -75,6 +63,23 @@ project root. This repo is a monorepo and the deployable frontend lives in
 If the Root Directory is left at `my-initia-project`, Vercel will not read this frontend's
 `vercel.json`, `package.json`, or `dist` output, and direct visits to routes like `/discover` or
 `/creator/:id` will fail even if every file is committed to Git.
+
+Important:
+
+- Do not use `localhost` or `127.0.0.1` for any `VITE_*RPC*`, `VITE_REST_API`, or `VITE_INDEXER_URL` value in Vercel.
+- Do not mix chains. Your RPC, REST, indexer, fee denom, fee token address, and contract addresses must all belong to the same deployed chain.
+- Do not leave the public chain gas price at `0`. Set `VITE_GAS_PRICE` to the target chain's non-zero minimum gas price or `requestTxSync` will broadcast a zero-fee transaction and fail with `insufficient fees`.
+- Vercel reads variables from its dashboard at build and runtime. Editing only your local `.env` file will not update the deployed site.
+- `BOOTSTRAP_PROVIDER=evm_private_key` sponsors the real rollup fee token so first-time users can complete registration without manually bridging gas first.
+- The `/agents` page can now call Vercel serverless routes directly for AI agent drafts and on-chain agent registration. If `BOOTSTRAP_EVM_PRIVATE_KEY` is configured, the serverless agent route can also auto-fund a generated testnet agent wallet before sending the registration transaction.
+- `VITE_BACKEND_URL` is optional. Without it, Vercel serverless routes handle agent drafts and on-chain agent registration; with it, the separate Express API can provide MongoDB-backed content, MCP, and richer backend workflows.
+- If you prefer not to keep a private key in Vercel, switch bootstrap to a remote sponsor service instead:
+
+```env
+BOOTSTRAP_PROVIDER=remote
+BOOTSTRAP_SPONSOR_API_URL=https://your-sponsor-backend.example.com/api/bootstrap
+BOOTSTRAP_SPONSOR_API_TOKEN=...
+```
 
 ## Interwoven Bridge note (local testing)
 

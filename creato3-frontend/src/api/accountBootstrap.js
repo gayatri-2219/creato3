@@ -10,6 +10,29 @@ export const isMissingAccountSequenceError = (error) => {
   )
 }
 
+export const isInsufficientFeeError = (error) => {
+  const message = error?.message || ''
+
+  return /insufficient fee/i.test(message) || /insufficient fees/i.test(message)
+}
+
+export const isBootstrapUnavailableError = (error) => {
+  const message = error?.message || ''
+
+  return (
+    /bootstrap is disabled/i.test(message) ||
+    /required when bootstrap/i.test(message) ||
+    /missing required server environment variable/i.test(message) ||
+    /remote bootstrap backend failed/i.test(message) ||
+    /method not allowed/i.test(message) ||
+    /sponsor wallet .* only has/i.test(message) ||
+    /could not choose a sponsor denom/i.test(message)
+  )
+}
+
+export const isRetryableBootstrapError = (error) =>
+  isMissingAccountSequenceError(error) || isInsufficientFeeError(error)
+
 export async function ensureAppChainAccount(address) {
   const nextAddress = (address || '').trim()
 
